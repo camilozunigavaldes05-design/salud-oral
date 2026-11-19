@@ -119,7 +119,6 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "es-cl"
 TIME_ZONE = "America/Santiago"
 
-TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -140,3 +139,5 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+AUTH_USER_MODEL = "cuentas.Usuario"
