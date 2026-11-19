@@ -150,6 +150,16 @@ python manage.py showmigrations
 
 Si aparece una lista de apps con `[ ]` o `[X]`, estás conectado a la base de datos del equipo. Si aparece un error, revisa la sección [Problemas frecuentes](#9-problemas-frecuentes).
 
+### Paso 8. Crear tu cuenta de administrador (opcional)
+
+Para entrar al panel `http://127.0.0.1:8000/admin/` necesitas una cuenta propia:
+
+```bash
+python manage.py createsuperuser
+```
+
+> En este proyecto **se inicia sesión con el correo**, no con un nombre de usuario. El comando te pedirá correo, nombre, apellido y contraseña. Mientras escribes la contraseña no se ve nada en pantalla: es normal, escríbela y presiona Enter.
+
 ---
 
 ## 4. Cómo trabajar día a día
@@ -336,16 +346,87 @@ Cada entrega o avance importante se marca con una **etiqueta (tag)** en GitHub. 
 
 ### Versiones planificadas
 
-| Versión | Contenido |
-|---|---|
-| `v0.1` | Proyecto Django conectado a Supabase y repositorio configurado |
-| `v0.2` | Modelos de datos y migraciones (9 entidades) |
-| `v0.3` | Registro e inicio de sesión con roles (CU-01) |
-| `v0.4` | Carga de imagen, validación de calidad e historial (CU-03 a CU-09), con IA simulada |
-| `v0.5` | Modelo de IA entrenado e integrado |
-| `v0.6` | Agendamiento, citas y notificaciones (CU-10 a CU-13) |
-| `v0.7` | Administración y auditoría (CU-02) |
-| `v1.0` | Versión de entrega final, con pruebas |
+| Versión | Contenido | Estado |
+|---|---|---|
+| `v0.1` | Proyecto Django conectado a Supabase y repositorio configurado | ✅ Lista |
+| `v0.2` | Modelos de datos y migraciones (9 entidades) | ✅ Lista |
+| `v0.3` | Registro e inicio de sesión con roles (CU-01) | ⏳ Siguiente |
+| `v0.4` | Carga de imagen, validación de calidad e historial (CU-03 a CU-09), con IA simulada | Pendiente |
+| `v0.5` | Modelo de IA entrenado e integrado | Pendiente |
+| `v0.6` | Agendamiento, citas y notificaciones (CU-10 a CU-13) | Pendiente |
+| `v0.7` | Administración y auditoría (CU-02) | Pendiente |
+| `v1.0` | Versión de entrega final, con pruebas | Pendiente |
+
+Cuando una versión se termine, cambia su estado a **✅ Lista** en esta tabla, dentro del mismo Pull Request.
+
+### Paso a paso: cómo trabajar una versión de principio a fin
+
+Una versión puede tener una o varias partes (por ejemplo, la `v0.2` se hizo en dos Pull Requests). Cada parte sigue los pasos 1 a 7, y al final se cierra la versión con el paso 8.
+
+**1. Avisa en el grupo** qué versión o parte vas a hacer y qué app vas a modificar, para que nadie trabaje en lo mismo.
+
+**2. Parte desde `main` actualizada:**
+
+```bash
+git checkout main
+git pull
+```
+
+Si llegaron migraciones nuevas, aplícalas (si no hay nada nuevo, dirá `No migrations to apply`):
+
+```bash
+python manage.py migrate
+```
+
+**3. Crea una rama para tu parte:**
+
+```bash
+git checkout -b feature/nombre-de-la-parte
+```
+
+Por ejemplo: `feature/registro-login` para la `v0.3`.
+
+**4. Programa los cambios.** Si modificas algún `models.py`, sigue los pasos de la sección [6](#6-base-de-datos-y-migraciones):
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+**5. Prueba que funcione** antes de subir nada:
+
+```bash
+python manage.py runserver
+```
+
+Abre `http://127.0.0.1:8000/` (o `/admin/`) en el navegador y revisa lo que hiciste. Apaga el servidor con `Ctrl + C`.
+
+**6. Revisa, guarda y sube tus cambios:**
+
+```bash
+git status
+```
+
+Comprueba que **no** aparezcan `.env`, `venv/` ni archivos comprimidos (`.rar`, `.zip`). Si aparecen, agrega solo las carpetas o archivos que cambiaste en vez de usar `git add .`:
+
+```bash
+git add cuentas
+git commit -m "Agrega página de registro de pacientes"
+git push -u origin feature/nombre-de-la-parte
+```
+
+**7. Abre el Pull Request** en GitHub (botón **Compare & pull request**), explica qué hiciste y qué requerimiento atiende (por ejemplo, "RF-01"), y pide a un compañero que lo revise y presione **Merge pull request** → **Confirm merge**.
+
+**8. Cierra la versión** cuando todas sus partes estén unidas a `main` y el equipo esté de acuerdo:
+
+```bash
+git checkout main
+git pull
+git tag -a v0.3 -m "Registro e inicio de sesión con roles"
+git push origin v0.3
+```
+
+Avisa en el grupo que la versión está lista para que todos hagan `git pull`.
 
 ### Cómo crear una versión
 
