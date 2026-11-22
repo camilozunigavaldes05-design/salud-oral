@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block titulo %}Registro de profesionales{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta tarjeta-estrecha">
+    <h1>Registro de profesionales</h1>
+    <p class="aviso">
+      Tu cuenta quedará <strong>pendiente de verificación</strong>. Podrás ingresar cuando un
+      administrador confirme tus datos en el Registro Nacional de Prestadores Individuales de Salud.
+    </p>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% include "cuentas/_formulario.html" %}
+      <button type="submit" class="boton boton-ancho">Enviar registro</button>
+    </form>
+    <p>¿Ya tienes cuenta? <a href="{% url 'cuentas:login' %}">Inicia sesión</a>.</p>
+  </section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block titulo %}Inicio{% endblock %}
+
+{% block contenido %}
+  <h1>Hola, {{ user.first_name }}</h1>
+  <p>{{ user.profesional.especialidad }} · {{ user.profesional.centro }}, {{ user.profesional.comuna }}</p>
+  <div class="rejilla">
+    <section class="tarjeta opcion">
+      <h2>Mis horarios</h2>
+      <p>Configura los bloques en que atiendes.</p>
+      <span class="proximamente">Disponible en la versión 0.6</span>
+    </section>
+    <section class="tarjeta opcion">
+      <h2>Mis citas</h2>
+      <p>Confirma, reprograma o cancela las solicitudes de tus pacientes.</p>
+      <span class="proximamente">Disponible en la versión 0.6</span>
+    </section>
+    <section class="tarjeta opcion">
+      <h2>Historial de pacientes</h2>
+      <p>Revisa las evaluaciones de pacientes con cita vinculada.</p>
+      <span class="proximamente">Disponible en la versión 0.6</span>
+    </section>
+  </div>
+{% endblock %}
