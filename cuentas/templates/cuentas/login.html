@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block titulo %}Iniciar sesión{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta tarjeta-estrecha">
+    <h1>Iniciar sesión</h1>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% include "cuentas/_formulario.html" %}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <button type="submit" class="boton boton-ancho">Ingresar</button>
+    </form>
+    <p>¿No tienes cuenta? <a href="{% url 'cuentas:registro_paciente' %}">Regístrate</a>.</p>
+  </section>
+{% endblock %}

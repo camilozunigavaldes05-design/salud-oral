@@ -350,8 +350,8 @@ Cada entrega o avance importante se marca con una **etiqueta (tag)** en GitHub. 
 |---|---|---|
 | `v0.1` | Proyecto Django conectado a Supabase y repositorio configurado | ✅ Lista |
 | `v0.2` | Modelos de datos y migraciones (9 entidades) | ✅ Lista |
-| `v0.3` | Registro e inicio de sesión con roles (CU-01) | ⏳ Siguiente |
-| `v0.4` | Carga de imagen, validación de calidad e historial (CU-03 a CU-09), con IA simulada | Pendiente |
+| `v0.3` | Registro e inicio de sesión con roles (CU-01) | ✅ Lista |
+| `v0.4` | Carga de imagen, validación de calidad e historial (CU-03 a CU-09), con IA simulada | ⏳ Siguiente |
 | `v0.5` | Modelo de IA entrenado e integrado | Pendiente |
 | `v0.6` | Agendamiento, citas y notificaciones (CU-10 a CU-13) | Pendiente |
 | `v0.7` | Administración y auditoría (CU-02) | Pendiente |

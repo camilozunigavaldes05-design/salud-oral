@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block titulo %}Inicio{% endblock %}
+
+{% block contenido %}
+  <h1>Hola, {{ user.first_name }}</h1>
+  <p>¿Qué quieres hacer hoy?</p>
+  <div class="rejilla">
+    <section class="tarjeta opcion">
+      <h2>Nueva evaluación</h2>
+      <p>Fotografía tu boca y obtén una orientación sobre tu nivel de riesgo.</p>
+      <span class="proximamente">Disponible en la versión 0.4</span>
+    </section>
+    <section class="tarjeta opcion">
+      <h2>Mi historial</h2>
+      <p>Revisa tus evaluaciones anteriores.</p>
+      <span class="proximamente">Disponible en la versión 0.4</span>
+    </section>
+    <section class="tarjeta opcion">
+      <h2>Agendar una cita</h2>
+      <p>Solicita una hora con un profesional verificado.</p>
+      <span class="proximamente">Disponible en la versión 0.6</span>
+    </section>
+  </div>
+{% endblock %}
