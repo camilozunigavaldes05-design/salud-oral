@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block titulo %}Resultado de la evaluación{% endblock %}
+
+{% block contenido %}
+  <p><a href="{% url 'evaluaciones:historial' %}">← Volver a mi historial</a></p>
+
+  {% if evaluacion.estado == "REPORTE_DISPONIBLE" %}
+    {% if evaluacion.riesgo == "ALTO" %}
+      <section class="destacado-alto" role="alert">
+        <h2>{{ advertencias.destacado }}</h2>
+        <p>Te recomendamos no postergar la consulta.</p>
+        <span class="boton" aria-disabled="true">Agendar una cita</span>
+        <p class="proximamente">El agendamiento estará disponible en la versión 0.6</p>
+      </section>
+    {% endif %}
+
+    <section class="tarjeta">
+      <h1>Resultado de tu evaluación</h1>
+      <p class="fecha">{{ evaluacion.fecha|date:"d/m/Y H:i" }}</p>
+      <div class="reporte">
+        <img src="{% url 'evaluaciones:imagen' evaluacion.pk %}" alt="Fotografía evaluada">
+        <div>
+          <p><span class="nivel nivel-{{ evaluacion.riesgo }}">{{ advertencias.titulo }}</span></p>
+          <p>{{ advertencias.resumen }}</p>
+          <h2>Recomendaciones</h2>
+          <ul>
+            {% for recomendacion in advertencias.recomendaciones %}
+              <li>{{ recomendacion }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <p class="aviso">{{ aviso }}</p>
+      <div class="acciones">
+        <a class="boton boton-secundario" href="{% url 'evaluaciones:nueva' %}">Hacer otra evaluación</a>
+      </div>
+    </section>
+
+  {% elif evaluacion.estado == "NO_COMPLETADA" %}
+    <section class="tarjeta">
+      <h1>La evaluación no se completó</h1>
+      <p class="fecha">{{ evaluacion.fecha|date:"d/m/Y H:i" }}</p>
+      <p>Tu fotografía pasó la revisión de calidad, pero el análisis no pudo terminar. Puedes intentarlo de nuevo.</p>
+      {% if puede_reintentarse %}
+        <form method="post" action="{% url 'evaluaciones:reintentar' evaluacion.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="boton">Reintentar el análisis</button>
+        </form>
+      {% endif %}
+    </section>
+
+  {% elif evaluacion.estado == "RECHAZADA_POR_CALIDAD" %}
+    <section class="tarjeta">
+      <h1>La fotografía no superó la revisión de calidad</h1>
+      <p>Motivo: {{ evaluacion.motivo_rechazo }}.</p>
+      <a class="boton" href="{% url 'evaluaciones:nueva' %}">Tomar una nueva fotografía</a>
+    </section>
+
+  {% else %}
+    <section class="tarjeta">
+      <h1>Tu evaluación está en proceso</h1>
+      <p>Actualiza esta página en unos segundos.</p>
+    </section>
+  {% endif %}
+{% endblock %}

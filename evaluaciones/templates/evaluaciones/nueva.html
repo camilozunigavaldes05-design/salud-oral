@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nueva evaluación{% endblock %}
+
+{% block contenido %}
+  <section class="tarjeta tarjeta-estrecha">
+    <h1>Nueva evaluación</h1>
+
+    {% if calidad and not calidad.aprobada %}
+      <div class="mensaje mensaje-error" role="alert">
+        <strong>La foto no se pudo analizar.</strong>
+        <ul>
+          {% for problema in calidad.problemas %}
+            <li>{{ problema.consejo }}</li>
+          {% endfor %}
+        </ul>
+        Por favor, toma una nueva fotografía.
+      </div>
+    {% endif %}
+
+    <p class="aviso">
+      <strong>Importante:</strong> esta evaluación es <strong>orientativa</strong>. No es un
+      diagnóstico y no reemplaza la consulta con un profesional de la salud oral.
+    </p>
+
+    <h2>Para una buena foto</h2>
+    <ul class="consejos">
+      <li>Busca un lugar con buena luz, sin el sol de frente.</li>
+      <li>Abre bien la boca y acerca el teléfono a la zona que quieres revisar.</li>
+      <li>Mantén el teléfono quieto y espera a que enfoque.</li>
+    </ul>
+
+    <form method="post" enctype="multipart/form-data" novalidate id="formulario-evaluacion">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="campo">
+        {{ form.imagen.label_tag }}
+        <div id="{{ form.imagen.auto_id }}_helptext">{{ form.imagen.help_text }}</div>
+        {{ form.imagen.errors }}
+        {{ form.imagen }}
+        <figure class="vista-previa" id="vista-previa" hidden>
+          <img src="" alt="Vista previa de la fotografía seleccionada">
+        </figure>
+      </div>
+
+      <div class="campo">
+        {{ form.acepta.errors }}
+        <div class="casilla">
+          {{ form.acepta }}
+          <label for="{{ form.acepta.id_for_label }}">{{ form.acepta.label }}</label>
+        </div>
+      </div>
+
+      <button type="submit" class="boton boton-ancho" id="boton-enviar">Analizar fotografía</button>
+    </form>
+    <p><a href="{% url 'evaluaciones:historial' %}">Ver mi historial</a></p>
+  </section>
+
+  <script>
+    (function () {
+      var entrada = document.getElementById("{{ form.imagen.auto_id }}");
+      var vista = document.getElementById("vista-previa");
+      var formulario = document.getElementById("formulario-evaluacion");
+      var boton = document.getElementById("boton-enviar");
+
+      entrada.addEventListener("change", function () {
+        var archivo = entrada.files && entrada.files[0];
+        if (!archivo) {
+          vista.hidden = true;
+          return;
+        }
+        vista.querySelector("img").src = URL.createObjectURL(archivo);
+        vista.hidden = false;
+      });
+
+      formulario.addEventListener("submit", function () {
+        boton.disabled = true;
+        boton.textContent = "Analizando la fotografía…";
+      });
+    })();
+  </script>
+{% endblock %}
