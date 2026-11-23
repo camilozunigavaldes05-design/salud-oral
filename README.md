@@ -30,9 +30,9 @@ Página web responsiva que permite al paciente fotografiar su cavidad bucal, val
 | Lenguaje | Python 3.13 |
 | Framework web | Django (con plantillas HTML) |
 | Base de datos | PostgreSQL alojado en **Supabase** |
-| Almacenamiento de imágenes | Supabase Storage (bucket privado) |
+| Almacenamiento de imágenes | Carpeta privada `almacenamiento_privado/` en cada PC (más adelante, Supabase Storage) |
 | Filtro de calidad de imagen | OpenCV (luminancia y varianza del Laplaciano) |
-| Clasificación de riesgo | PyTorch |
+| Clasificación de riesgo | PyTorch, con el modelo EfficientNet-B0 entrenado en el repositorio `SaludOral-IA` |
 | Control de versiones | Git + GitHub |
 
 ---
@@ -49,6 +49,8 @@ Cada app de Django corresponde a un componente del informe (Tabla 6-2):
 | `agenda/` | Horarios, bloqueo temporal de 15 minutos y citas | RF-06, RF-08, RF-09 |
 | `notificaciones/` | Correos y alertas internas sobre las citas | RF-07 |
 | `administracion/` | Verificación de profesionales, perfiles y auditoría | RF-10 |
+| `ia/` | Modelo de IA entrenado (`ia/modelos/best_efficientnet_b0.pt`) y el código que lo usa | RF-04 |
+| `templates/` | Molde general de todas las páginas (`base.html`) | — |
 
 Archivos importantes en la raíz:
 
@@ -59,6 +61,7 @@ Archivos importantes en la raíz:
 | `.gitignore` | Indica qué archivos **no** se suben | Sí |
 | `.env` | Contraseñas y claves (base de datos, Django) | **No, nunca** |
 | `venv/` | Entorno virtual de cada persona | **No** |
+| `almacenamiento_privado/` | Fotografías que suben los pacientes en tu PC | **No, nunca** |
 
 ---
 
@@ -159,6 +162,26 @@ python manage.py createsuperuser
 ```
 
 > En este proyecto **se inicia sesión con el correo**, no con un nombre de usuario. El comando te pedirá correo, nombre, apellido y contraseña. Mientras escribes la contraseña no se ve nada en pantalla: es normal, escríbela y presiona Enter.
+
+---
+
+### Paso 9. Probar el modelo de IA (opcional)
+
+El modelo viene en `ia/modelos/best_efficientnet_b0.pt` y se instala con `requirements.txt` (incluye PyTorch, que pesa varios cientos de MB). Para probarlo con una foto:
+
+```bash
+python -m ia.predict --image ruta\a\una\foto.jpg
+```
+
+Debe mostrar las probabilidades que entrega el modelo. La aplicación convierte esa probabilidad en un nivel de riesgo en `evaluaciones/riesgo.py`:
+
+| Probabilidad que entrega el modelo | Nivel que ve el paciente |
+|---|---|
+| Menos de 30 % | Bajo |
+| Entre 30 % y 50 % | Moderado |
+| 50 % o más | Alto |
+
+Si el equipo decide otros cortes, se cambian solo en `UMBRAL_MODERADO` y `UMBRAL_ALTO` de ese archivo.
 
 ---
 
@@ -351,9 +374,9 @@ Cada entrega o avance importante se marca con una **etiqueta (tag)** en GitHub. 
 | `v0.1` | Proyecto Django conectado a Supabase y repositorio configurado | ✅ Lista |
 | `v0.2` | Modelos de datos y migraciones (9 entidades) | ✅ Lista |
 | `v0.3` | Registro e inicio de sesión con roles (CU-01) | ✅ Lista |
-| `v0.4` | Carga de imagen, validación de calidad e historial (CU-03 a CU-09), con IA simulada | ⏳ Siguiente |
-| `v0.5` | Modelo de IA entrenado e integrado | Pendiente |
-| `v0.6` | Agendamiento, citas y notificaciones (CU-10 a CU-13) | Pendiente |
+| `v0.4` | Carga de imagen, validación de calidad, reporte e historial (CU-03 a CU-09) | ✅ Lista |
+| `v0.5` | Modelo de IA entrenado e integrado | ✅ Lista (se integró junto con la `v0.4`) |
+| `v0.6` | Agendamiento, citas y notificaciones (CU-10 a CU-13) | ⏳ Siguiente |
 | `v0.7` | Administración y auditoría (CU-02) | Pendiente |
 | `v1.0` | Versión de entrega final, con pruebas | Pendiente |
 
@@ -494,3 +517,13 @@ python manage.py runserver
 | `git push` rechazado | Hay cambios nuevos en GitHub que no tienes | `git pull` y luego `git push` |
 | Conflicto al hacer `git pull` o `merge` | Dos personas cambiaron las mismas líneas | Ver [Si aparece un conflicto](#si-aparece-un-conflicto) |
 | El `.env` aparece en `git status` | El `.gitignore` no está funcionando | **No hagas commit.** Avisa al grupo |
+| Error al instalar `torch` que menciona una ruta o un archivo que no existe | Windows limita el largo de las rutas de archivos | Activa las rutas largas (ver abajo) y vuelve a ejecutar `pip install -r requirements.txt` |
+| La evaluación queda como "No completada" | El modelo no cargó (por ejemplo, falta instalar `torch`) | Revisa la terminal donde corre `runserver`; instala los paquetes y presiona **Reintentar el análisis** |
+
+**Activar las rutas largas en Windows:** abre PowerShell **como administrador** y ejecuta:
+
+```powershell
+New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+```
+
+Luego reinicia el PC.

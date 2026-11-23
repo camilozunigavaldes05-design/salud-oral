@@ -137,6 +137,8 @@ LOGIN_URL = "cuentas:login"
 LOGIN_REDIRECT_URL = "cuentas:inicio"
 LOGOUT_REDIRECT_URL = "cuentas:bienvenida"
 
+ALMACENAMIENTO_PRIVADO = BASE_DIR / "almacenamiento_privado"
+
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
