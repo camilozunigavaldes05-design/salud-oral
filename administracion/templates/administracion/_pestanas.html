@@ -1,0 +1,5 @@
+<nav class="pestanas" aria-label="Secciones de administración">
+  <a href="{% url 'administracion:profesionales' %}" {% if seccion == "profesionales" %}aria-current="page"{% endif %}>Profesionales</a>
+  <a href="{% url 'administracion:usuarios' %}" {% if seccion == "usuarios" %}aria-current="page"{% endif %}>Usuarios</a>
+  <a href="{% url 'administracion:auditoria' %}" {% if seccion == "auditoria" %}aria-current="page"{% endif %}>Auditoría</a>
+</nav>

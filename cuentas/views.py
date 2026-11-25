@@ -5,6 +5,9 @@ from django.shortcuts import redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
+from administracion.auditoria import registrar
+from administracion.servicios import avisar_nuevo_profesional
+
 from .autenticacion import verificar_credenciales
 from .forms import InicioSesionForm, RegistroPacienteForm, RegistroProfesionalForm
 from .models import Usuario
@@ -55,6 +58,7 @@ def registro_paciente(request):
     form = RegistroPacienteForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         usuario = form.save()
+        registrar(usuario, "REGISTRO", "cuenta")
         login(request, usuario)
         messages.success(request, "¡Tu cuenta fue creada con éxito!")
         return redirect("cuentas:inicio")
@@ -68,7 +72,9 @@ def registro_profesional(request):
 
     form = RegistroProfesionalForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
-        form.save()
+        usuario = form.save()
+        registrar(usuario, "REGISTRO", "cuenta")
+        avisar_nuevo_profesional(usuario.profesional)
         messages.info(
             request,
             "Tu cuenta fue creada y quedó pendiente de verificación. "
@@ -87,6 +93,7 @@ def inicio(request):
 
 @require_POST
 def cerrar_sesion(request):
+    registrar(request.user if request.user.is_authenticated else None, "CIERRE_SESION", "cuenta")
     logout(request)
     messages.info(request, "Cerraste sesión correctamente.")
     return redirect("cuentas:bienvenida")

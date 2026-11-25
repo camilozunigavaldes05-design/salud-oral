@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block titulo %}Horarios disponibles{% endblock %}
+
+{% block contenido %}
+  <p><a href="{% url 'agenda:directorio' %}">← Volver a los profesionales</a></p>
+  <section class="tarjeta">
+    <h1>{{ profesional.usuario.first_name }} {{ profesional.usuario.last_name }}</h1>
+    <p>{{ profesional.especialidad }} · {{ profesional.centro }}, {{ profesional.comuna }}</p>
+    <p class="aviso">Al elegir una hora, la guardamos para ti durante <strong>15 minutos</strong> mientras confirmas la solicitud.</p>
+
+    {% for dia, horarios in dias %}
+      <div class="dia">
+        <h3>{{ dia|date:"l j \d\e F"|capfirst }}</h3>
+        <div class="bloques">
+          {% for horario in horarios %}
+            <form method="post" action="{% url 'agenda:reservar' horario.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="boton boton-secundario bloque-hora">{{ horario.inicio|time:"H:i" }}</button>
+            </form>
+          {% endfor %}
+        </div>
+      </div>
+    {% empty %}
+      <p>Este profesional no tiene horas disponibles en este momento.</p>
+    {% endfor %}
+  </section>
+{% endblock %}

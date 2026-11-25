@@ -3,6 +3,8 @@ from datetime import timedelta
 from django.contrib.auth import authenticate
 from django.utils import timezone
 
+from administracion.auditoria import BLOQUEADO, FALLIDO, RECHAZADO, registrar
+
 from .models import Usuario
 
 MAX_INTENTOS = 5
@@ -31,6 +33,7 @@ def verificar_credenciales(request, email, password):
     usuario = Usuario.objects.filter(email__iexact=email).first()
 
     if usuario and usuario.bloqueado_hasta and usuario.bloqueado_hasta > ahora:
+        registrar(usuario, "INICIO_SESION", "cuenta", BLOQUEADO)
         return None, _mensaje_bloqueo(usuario)
 
     autenticado = authenticate(
@@ -43,16 +46,20 @@ def verificar_credenciales(request, email, password):
         if usuario:
             _registrar_intento_fallido(usuario, ahora)
             if usuario.bloqueado_hasta and usuario.bloqueado_hasta > ahora:
+                registrar(usuario, "INICIO_SESION", "cuenta", BLOQUEADO)
                 return None, _mensaje_bloqueo(usuario)
+            registrar(usuario, "INICIO_SESION", "cuenta", FALLIDO)
         return None, MENSAJE_CREDENCIALES
 
     if autenticado.estado == Usuario.Estado.PENDIENTE_VERIFICACION:
+        registrar(autenticado, "INICIO_SESION", "cuenta", RECHAZADO)
         return None, (
             "Tu cuenta de profesional está pendiente de verificación. "
             "Podrás ingresar cuando un administrador la apruebe."
         )
 
     if autenticado.estado == Usuario.Estado.SUSPENDIDA:
+        registrar(autenticado, "INICIO_SESION", "cuenta", RECHAZADO)
         return None, "Tu cuenta está suspendida. Contacta al administrador."
 
     if autenticado.intentos_fallidos or autenticado.bloqueado_hasta:
@@ -60,4 +67,5 @@ def verificar_credenciales(request, email, password):
         autenticado.bloqueado_hasta = None
         autenticado.save(update_fields=["intentos_fallidos", "bloqueado_hasta"])
 
+    registrar(autenticado, "INICIO_SESION", "cuenta")
     return autenticado, None

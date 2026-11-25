@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block titulo %}Agendar una cita{% endblock %}
+
+{% block contenido %}
+  <h1>Agendar una cita</h1>
+  <p>Estos profesionales están verificados y tienen horas disponibles. Elige uno para ver sus horarios.</p>
+
+  {% if profesionales %}
+    <div class="rejilla">
+      {% for profesional in profesionales %}
+        <section class="tarjeta opcion">
+          <h2>{{ profesional.usuario.first_name }} {{ profesional.usuario.last_name }}</h2>
+          <p>{{ profesional.especialidad }}<br>{{ profesional.centro }}, {{ profesional.comuna }}</p>
+          <a class="boton" href="{% url 'agenda:horarios_profesional' profesional.pk %}">Ver horarios</a>
+        </section>
+      {% endfor %}
+    </div>
+  {% else %}
+    <section class="tarjeta">
+      <p>Por ahora no hay profesionales con horas disponibles. Vuelve a revisar más tarde.</p>
+    </section>
+  {% endif %}
+{% endblock %}

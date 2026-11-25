@@ -139,9 +139,13 @@ DB_PASSWORD=...
 DB_HOST=...
 DB_PORT=5432
 SECRET_KEY='...'
+EMAIL_USER=...
+EMAIL_PASSWORD=...
 ```
 
 3. Guarda con `Ctrl + S`.
+
+> `EMAIL_USER` y `EMAIL_PASSWORD` son la cuenta de Gmail del proyecto y su **contraseña de aplicación** (16 letras, sin espacios). Si no las tienes, la aplicación funciona igual: los correos no se envían, sino que se muestran en la terminal donde corre `runserver`.
 
 > **Nunca subas este archivo a GitHub ni lo compartas en grupos.** El `.gitignore` ya lo protege, pero no lo copies a otras carpetas ni lo pegues en otros lados.
 
@@ -376,9 +380,9 @@ Cada entrega o avance importante se marca con una **etiqueta (tag)** en GitHub. 
 | `v0.3` | Registro e inicio de sesión con roles (CU-01) | ✅ Lista |
 | `v0.4` | Carga de imagen, validación de calidad, reporte e historial (CU-03 a CU-09) | ✅ Lista |
 | `v0.5` | Modelo de IA entrenado e integrado | ✅ Lista (se integró junto con la `v0.4`) |
-| `v0.6` | Agendamiento, citas y notificaciones (CU-10 a CU-13) | ⏳ Siguiente |
-| `v0.7` | Administración y auditoría (CU-02) | Pendiente |
-| `v1.0` | Versión de entrega final, con pruebas | Pendiente |
+| `v0.6` | Agendamiento, citas y notificaciones (CU-10 a CU-13) | ✅ Lista |
+| `v0.7` | Administración y auditoría (CU-02) | ✅ Lista |
+| `v1.0` | Versión de entrega final, con pruebas | ⏳ Siguiente |
 
 Cuando una versión se termine, cambia su estado a **✅ Lista** en esta tabla, dentro del mismo Pull Request.
 
@@ -518,6 +522,9 @@ python manage.py runserver
 | Conflicto al hacer `git pull` o `merge` | Dos personas cambiaron las mismas líneas | Ver [Si aparece un conflicto](#si-aparece-un-conflicto) |
 | El `.env` aparece en `git status` | El `.gitignore` no está funcionando | **No hagas commit.** Avisa al grupo |
 | Error al instalar `torch` que menciona una ruta o un archivo que no existe | Windows limita el largo de las rutas de archivos | Activa las rutas largas (ver abajo) y vuelve a ejecutar `pip install -r requirements.txt` |
+| No llegan los correos | Falta `EMAIL_USER` o `EMAIL_PASSWORD` en el `.env`, o la clave tiene espacios | Revisa el `.env`, guarda y **reinicia** `runserver`. Mira también la carpeta Spam |
+| `SMTPAuthenticationError` en la terminal | Se usó la contraseña normal de Gmail | Usa la **contraseña de aplicación** de 16 letras |
+| Un profesional no aparece al agendar | No está verificado o no tiene horarios futuros | El administrador lo verifica en **Administración → Profesionales** y el profesional publica bloques en **Mis horarios** |
 | La evaluación queda como "No completada" | El modelo no cargó (por ejemplo, falta instalar `torch`) | Revisa la terminal donde corre `runserver`; instala los paquetes y presiona **Reintentar el análisis** |
 
 **Activar las rutas largas en Windows:** abre PowerShell **como administrador** y ejecuta:

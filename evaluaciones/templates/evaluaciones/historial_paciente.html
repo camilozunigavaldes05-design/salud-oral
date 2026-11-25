@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block titulo %}Historial del paciente{% endblock %}
+
+{% block contenido %}
+  <p><a href="{% url 'agenda:citas_profesional' %}">← Volver a mis citas</a></p>
+  <h1>Historial de {{ paciente.first_name }} {{ paciente.last_name }}</h1>
+  <p class="aviso">Puedes ver este historial mientras tengas una cita vigente con el paciente y hasta 30 días después de la atención.</p>
+
+  {% if evaluaciones %}
+    <ol class="linea-tiempo" style="margin-top: 1.5rem;">
+      {% for evaluacion in evaluaciones %}
+        <li>
+          <article class="tarjeta item-historial">
+            {% if evaluacion.imagen_uri %}
+              <a href="{% url 'evaluaciones:imagen_paciente' paciente.pk evaluacion.pk %}" target="_blank" rel="noopener">
+                <img src="{% url 'evaluaciones:imagen_paciente' paciente.pk evaluacion.pk %}" alt="Fotografía del {{ evaluacion.fecha|date:'d/m/Y' }}" loading="lazy">
+              </a>
+            {% endif %}
+            <div class="datos">
+              <p class="fecha">{{ evaluacion.fecha|date:"d/m/Y H:i" }}</p>
+              <span class="nivel nivel-{{ evaluacion.riesgo }}">Riesgo {{ evaluacion.get_riesgo_display|lower }}</span>
+            </div>
+          </article>
+        </li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <section class="tarjeta" style="margin-top: 1.5rem;"><p>El paciente aún no tiene evaluaciones.</p></section>
+  {% endif %}
+{% endblock %}

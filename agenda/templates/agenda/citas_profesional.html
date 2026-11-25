@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block titulo %}Mis citas{% endblock %}
+
+{% block contenido %}
+  <h1>Citas de mi agenda</h1>
+  <nav class="pestanas" aria-label="Filtro de citas">
+    <a href="?ver=proximas" {% if ver != "todas" %}aria-current="page"{% endif %}>Próximas</a>
+    <a href="?ver=todas" {% if ver == "todas" %}aria-current="page"{% endif %}>Todas</a>
+  </nav>
+
+  {% if citas %}
+    <div class="tabla-contenedor">
+      <table class="tabla">
+        <thead>
+          <tr><th>Fecha</th><th>Paciente</th><th>Estado</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for cita in citas %}
+            <tr>
+              <td>{{ cita.horario.inicio|date:"d/m/Y" }}<br>{{ cita.horario.inicio|time:"H:i" }} – {{ cita.horario.fin|time:"H:i" }}</td>
+              <td>{{ cita.paciente.first_name }} {{ cita.paciente.last_name }}</td>
+              <td><span class="estado estado-{{ cita.estado }}">{{ cita.get_estado_display }}</span></td>
+              <td><a class="boton boton-secundario boton-chico" href="{% url 'agenda:detalle_cita' cita.pk %}">Gestionar</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <section class="tarjeta"><p>No hay citas para mostrar.</p></section>
+  {% endif %}
+{% endblock %}

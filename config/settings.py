@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'cuentas.middleware.CerrarSesionCuentaSuspendida',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -70,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'notificaciones.context_processors.avisos',
             ],
         },
     },
@@ -143,8 +145,28 @@ ALMACENAMIENTO_PRIVADO = BASE_DIR / "almacenamiento_privado"
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+EMAIL_USER = os.getenv("EMAIL_USER", "")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "")
+
+if EMAIL_USER and EMAIL_PASSWORD:
+    MAILERS = {
+        'default': {
+            'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+            'OPTIONS': {
+                'host': 'smtp.gmail.com',
+                'port': 587,
+                'username': EMAIL_USER,
+                'password': EMAIL_PASSWORD,
+                'use_tls': True,
+                'timeout': 10,
+            },
+        },
+    }
+    DEFAULT_FROM_EMAIL = f"Salud Oral <{EMAIL_USER}>"
+else:
+    MAILERS = {
+        'default': {
+            'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        },
+    }
+    DEFAULT_FROM_EMAIL = "Salud Oral <no-responder@saludoral.local>"
