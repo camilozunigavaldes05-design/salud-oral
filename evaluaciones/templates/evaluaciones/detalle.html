@@ -10,8 +10,7 @@
       <section class="destacado-alto" role="alert">
         <h2>{{ advertencias.destacado }}</h2>
         <p>Te recomendamos no postergar la consulta.</p>
-        <span class="boton" aria-disabled="true">Agendar una cita</span>
-        <p class="proximamente">El agendamiento estará disponible en la versión 0.6</p>
+        <a class="boton" href="{% url 'agenda:directorio' %}">Agendar una cita</a>
       </section>
     {% endif %}
 

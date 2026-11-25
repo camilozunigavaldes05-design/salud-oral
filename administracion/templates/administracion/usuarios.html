@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block titulo %}Usuarios{% endblock %}
+
+{% block contenido %}
+  <h1>Administración</h1>
+  {% include "administracion/_pestanas.html" with seccion="usuarios" %}
+
+  <form method="get" class="tarjeta" style="margin-bottom: 1.5rem;">
+    <div class="fila-campos">
+      {% for campo in form.visible_fields %}
+        <div class="campo">{{ campo.as_field_group }}</div>
+      {% endfor %}
+      <div class="campo"><button type="submit" class="boton">Filtrar</button></div>
+    </div>
+  </form>
+
+  {% if pagina %}
+    <div class="tabla-contenedor">
+      <table class="tabla">
+        <thead><tr><th>Usuario</th><th>Rol</th><th>Estado</th><th>Registro</th><th></th></tr></thead>
+        <tbody>
+          {% for usuario in pagina %}
+            <tr>
+              <td>{{ usuario.first_name }} {{ usuario.last_name }}<br><span class="fecha">{{ usuario.email }}</span></td>
+              <td>{{ usuario.get_rol_display }}</td>
+              <td><span class="estado estado-{{ usuario.estado }}">{{ usuario.get_estado_display }}</span></td>
+              <td>{{ usuario.date_joined|date:"d/m/Y" }}</td>
+              <td>
+                {% if usuario.pk != user.pk %}
+                  <form method="post" action="{% url 'administracion:estado_usuario' usuario.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="volver" value="{{ request.get_full_path }}">
+                    {% if usuario.estado == "SUSPENDIDA" %}
+                      <input type="hidden" name="estado" value="activar">
+                      <button type="submit" class="boton boton-secundario boton-chico">Reactivar</button>
+                    {% elif usuario.estado == "ACTIVA" %}
+                      <input type="hidden" name="estado" value="suspender">
+                      <button type="submit" class="boton boton-peligro boton-chico">Suspender</button>
+                    {% endif %}
+                  </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if pagina.has_other_pages %}
+      <div class="paginacion">
+        {% if pagina.has_previous %}<a href="?{{ parametros }}&pagina={{ pagina.previous_page_number }}">← Anterior</a>{% endif %}
+        <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+        {% if pagina.has_next %}<a href="?{{ parametros }}&pagina={{ pagina.next_page_number }}">Siguiente →</a>{% endif %}
+      </div>
+    {% endif %}
+  {% else %}
+    <section class="tarjeta"><p>No hay usuarios que coincidan con el filtro.</p></section>
+  {% endif %}
+{% endblock %}

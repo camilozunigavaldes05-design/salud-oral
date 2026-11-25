@@ -7,14 +7,24 @@
   <p>Panel de administración del sistema.</p>
   <div class="rejilla">
     <section class="tarjeta opcion">
-      <h2>Panel de Django</h2>
-      <p>Gestiona usuarios, profesionales y todos los datos del sistema.</p>
-      <a class="boton" href="{% url 'admin:index' %}">Abrir panel</a>
-    </section>
-    <section class="tarjeta opcion">
       <h2>Verificar profesionales</h2>
       <p>Aprueba o rechaza los registros pendientes.</p>
-      <span class="proximamente">Disponible en la versión 0.7</span>
+      <a class="boton" href="{% url 'administracion:profesionales' %}">Ver profesionales</a>
+    </section>
+    <section class="tarjeta opcion">
+      <h2>Usuarios</h2>
+      <p>Busca cuentas y suspéndelas o reactívalas.</p>
+      <a class="boton" href="{% url 'administracion:usuarios' %}">Ver usuarios</a>
+    </section>
+    <section class="tarjeta opcion">
+      <h2>Auditoría</h2>
+      <p>Revisa quién hizo qué y cuándo.</p>
+      <a class="boton" href="{% url 'administracion:auditoria' %}">Ver auditoría</a>
+    </section>
+    <section class="tarjeta opcion">
+      <h2>Panel de Django</h2>
+      <p>Acceso técnico a todas las tablas.</p>
+      <a class="boton boton-secundario" href="{% url 'admin:index' %}">Abrir panel</a>
     </section>
   </div>
 {% endblock %}

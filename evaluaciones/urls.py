@@ -10,4 +10,10 @@ urlpatterns = [
     path("<int:pk>/", views.detalle, name="detalle"),
     path("<int:pk>/reintentar/", views.reintentar, name="reintentar"),
     path("<int:pk>/imagen/", views.imagen, name="imagen"),
+    path("pacientes/<int:paciente_id>/", views.historial_paciente, name="historial_paciente"),
+    path(
+        "pacientes/<int:paciente_id>/<int:pk>/imagen/",
+        views.imagen_paciente,
+        name="imagen_paciente",
+    ),
 ]

@@ -5,5 +5,6 @@ from .models import Notificacion
 
 @admin.register(Notificacion)
 class NotificacionAdmin(admin.ModelAdmin):
-    list_display = ["destinatario", "tipo", "canal", "estado_envio", "enviada_en", "leida_en"]
+    list_display = ["creada_en", "destinatario", "tipo", "canal", "asunto", "estado_envio", "leida_en"]
     list_filter = ["tipo", "canal", "estado_envio"]
+    search_fields = ["destinatario__email", "asunto"]

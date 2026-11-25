@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block titulo %}Auditoría{% endblock %}
+
+{% block contenido %}
+  <h1>Administración</h1>
+  {% include "administracion/_pestanas.html" with seccion="auditoria" %}
+
+  <form method="get" class="tarjeta" style="margin-bottom: 1.5rem;">
+    {{ form.non_field_errors }}
+    <div class="fila-campos">
+      {% for campo in form.visible_fields %}
+        <div class="campo">{{ campo.as_field_group }}</div>
+      {% endfor %}
+      <div class="campo"><button type="submit" class="boton">Filtrar</button></div>
+    </div>
+  </form>
+
+  {% if pagina %}
+    <div class="tabla-contenedor">
+      <table class="tabla">
+        <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Recurso</th><th>Resultado</th></tr></thead>
+        <tbody>
+          {% for registro in pagina %}
+            <tr>
+              <td>{{ registro.fecha|date:"d/m/Y H:i:s" }}</td>
+              <td>{{ registro.usuario.email }}</td>
+              <td>{{ registro.accion }}</td>
+              <td>{{ registro.recurso }}</td>
+              <td>{{ registro.resultado }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="paginacion">
+      {% if pagina.has_previous %}<a href="?{{ parametros }}&pagina={{ pagina.previous_page_number }}">← Más recientes</a>{% endif %}
+      <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }} · {{ pagina.paginator.count }} registros</span>
+      {% if pagina.has_next %}<a href="?{{ parametros }}&pagina={{ pagina.next_page_number }}">Más antiguos →</a>{% endif %}
+    </div>
+  {% else %}
+    <section class="tarjeta"><p>No hay registros que coincidan con el filtro.</p></section>
+  {% endif %}
+{% endblock %}

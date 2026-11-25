@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block titulo %}Gestionar cita{% endblock %}
+
+{% block contenido %}
+  <p><a href="{% url 'agenda:citas_profesional' %}">← Volver a mis citas</a></p>
+  <section class="tarjeta">
+    <h1>Cita de {{ cita.paciente.first_name }} {{ cita.paciente.last_name }}</h1>
+    <p><span class="estado estado-{{ cita.estado }}">{{ cita.get_estado_display }}</span></p>
+    <dl class="datos-cita">
+      <dt>Fecha y hora</dt>
+      <dd>{{ cita.horario.inicio|date:"l j \d\e F \d\e Y" }}, de {{ cita.horario.inicio|time:"H:i" }} a {{ cita.horario.fin|time:"H:i" }}</dd>
+      <dt>Correo del paciente</dt>
+      <dd>{{ cita.paciente.email }}</dd>
+      <dt>Solicitada el</dt>
+      <dd>{{ cita.creada_en|date:"d/m/Y H:i" }}</dd>
+      {% if cita.motivo_cancelacion %}
+        <dt>Motivo de la cancelación</dt>
+        <dd>{{ cita.motivo_cancelacion }}</dd>
+      {% endif %}
+    </dl>
+    {% if ver_historial %}
+      <a class="boton boton-secundario" href="{% url 'evaluaciones:historial_paciente' cita.paciente.pk %}">Ver historial de evaluaciones</a>
+    {% endif %}
+  </section>
+
+  {% if cita.estado != "CANCELADA" %}
+    <div class="rejilla">
+      {% if cita.estado == "PENDIENTE_CONFIRMACION" or cita.estado == "REPROGRAMADA" %}
+        <section class="tarjeta">
+          <h2 style="margin-top: 0;">Confirmar</h2>
+          <p>Se avisará al paciente por correo y en la página.</p>
+          <form method="post" action="{% url 'agenda:accion_cita' cita.pk 'confirmar' %}">
+            {% csrf_token %}
+            <button type="submit" class="boton">Confirmar cita</button>
+          </form>
+        </section>
+      {% endif %}
+      <section class="tarjeta">
+        <h2 style="margin-top: 0;">Reprogramar</h2>
+        {% if reprogramar_form.fields.nuevo_horario.choices|length > 1 %}
+          <form method="post" action="{% url 'agenda:accion_cita' cita.pk 'reprogramar' %}">
+            {% csrf_token %}
+            <div class="campo">{{ reprogramar_form.nuevo_horario.as_field_group }}</div>
+            <button type="submit" class="boton boton-secundario">Reprogramar</button>
+          </form>
+        {% else %}
+          <p>No tienes otros bloques disponibles. <a href="{% url 'agenda:mis_horarios' %}">Publica un bloque nuevo</a> para reprogramar.</p>
+        {% endif %}
+      </section>
+      <section class="tarjeta">
+        <h2 style="margin-top: 0;">Cancelar</h2>
+        <form method="post" action="{% url 'agenda:accion_cita' cita.pk 'cancelar' %}">
+          {% csrf_token %}
+          <div class="campo">{{ cancelar_form.motivo.as_field_group }}</div>
+          <button type="submit" class="boton boton-peligro">Cancelar cita</button>
+        </form>
+      </section>
+    </div>
+  {% endif %}
+{% endblock %}

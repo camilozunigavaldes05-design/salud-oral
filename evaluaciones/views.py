@@ -1,8 +1,14 @@
 import io
 
+from django.contrib.auth import get_user_model
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
+
+from administracion.auditoria import registrar
+from agenda.servicios import puede_ver_historial
+from cuentas.models import Usuario
+from cuentas.permisos import requiere_rol
 
 from .advertencias import AVISO_ORIENTATIVO, advertencias_para
 from .almacenamiento import leer_imagen
@@ -85,6 +91,44 @@ def historial(request):
 @solo_pacientes
 def imagen(request, pk):
     evaluacion = _evaluacion_propia(request, pk)
+    if not evaluacion.imagen_uri:
+        raise Http404
+    try:
+        contenido = leer_imagen(evaluacion.imagen_uri)
+    except FileNotFoundError:
+        raise Http404
+    respuesta = FileResponse(io.BytesIO(contenido), content_type=evaluacion.mime)
+    respuesta["Cache-Control"] = "private, no-store"
+    return respuesta
+
+
+def _paciente_autorizado(request, paciente_id):
+    paciente = get_object_or_404(get_user_model(), pk=paciente_id, rol=Usuario.Rol.PACIENTE)
+    if not puede_ver_historial(request.user, paciente):
+        registrar(request.user, "VER_HISTORIAL", f"paciente:{paciente.pk}", "RECHAZADO")
+        raise Http404
+    return paciente
+
+
+@requiere_rol(Usuario.Rol.PROFESIONAL)
+def historial_paciente(request, paciente_id):
+    paciente = _paciente_autorizado(request, paciente_id)
+    registrar(request.user, "VER_HISTORIAL", f"paciente:{paciente.pk}")
+    evaluaciones = Evaluacion.objects.filter(
+        paciente=paciente,
+        estado=Evaluacion.Estado.REPORTE_DISPONIBLE,
+    )
+    return render(
+        request,
+        "evaluaciones/historial_paciente.html",
+        {"paciente": paciente, "evaluaciones": evaluaciones},
+    )
+
+
+@requiere_rol(Usuario.Rol.PROFESIONAL)
+def imagen_paciente(request, paciente_id, pk):
+    paciente = _paciente_autorizado(request, paciente_id)
+    evaluacion = get_object_or_404(Evaluacion, pk=pk, paciente=paciente)
     if not evaluacion.imagen_uri:
         raise Http404
     try:

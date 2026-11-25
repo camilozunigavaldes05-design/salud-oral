@@ -5,21 +5,24 @@
 {% block contenido %}
   <h1>Hola, {{ user.first_name }}</h1>
   <p>{{ user.profesional.especialidad }} · {{ user.profesional.centro }}, {{ user.profesional.comuna }}</p>
+  {% if not user.profesional.verificado %}
+    <p class="aviso">Tu perfil aún no ha sido verificado por un administrador. Cuando lo verifiquen podrás publicar horarios.</p>
+  {% endif %}
   <div class="rejilla">
     <section class="tarjeta opcion">
       <h2>Mis horarios</h2>
-      <p>Configura los bloques en que atiendes.</p>
-      <span class="proximamente">Disponible en la versión 0.6</span>
+      <p>Publica los bloques en que atiendes.</p>
+      <a class="boton" href="{% url 'agenda:mis_horarios' %}">Configurar horarios</a>
     </section>
     <section class="tarjeta opcion">
       <h2>Mis citas</h2>
       <p>Confirma, reprograma o cancela las solicitudes de tus pacientes.</p>
-      <span class="proximamente">Disponible en la versión 0.6</span>
+      <a class="boton" href="{% url 'agenda:citas_profesional' %}">Ver citas</a>
     </section>
     <section class="tarjeta opcion">
       <h2>Historial de pacientes</h2>
-      <p>Revisa las evaluaciones de pacientes con cita vinculada.</p>
-      <span class="proximamente">Disponible en la versión 0.6</span>
+      <p>Abre una cita y presiona «Ver historial de evaluaciones» para revisar las fotos del paciente.</p>
+      <a class="boton boton-secundario" href="{% url 'agenda:citas_profesional' %}">Ir a mis citas</a>
     </section>
   </div>
 {% endblock %}

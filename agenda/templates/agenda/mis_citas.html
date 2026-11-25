@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block titulo %}Mis citas{% endblock %}
+
+{% block contenido %}
+  <h1>Mis citas</h1>
+  <div class="acciones">
+    <a class="boton" href="{% url 'agenda:directorio' %}">Solicitar una cita</a>
+  </div>
+
+  {% if citas %}
+    <ul class="lista-limpia" style="margin-top: 1.5rem;">
+      {% for cita in citas %}
+        {% with horario=cita.horario profesional=cita.horario.profesional %}
+          <li class="tarjeta" style="margin-bottom: 1rem;">
+            <p><span class="estado estado-{{ cita.estado }}">{{ cita.get_estado_display }}</span></p>
+            <h2 style="margin: 0.25rem 0;">{{ horario.inicio|date:"l j \d\e F \d\e Y" }}, {{ horario.inicio|time:"H:i" }} a {{ horario.fin|time:"H:i" }}</h2>
+            <p>{{ profesional.usuario.first_name }} {{ profesional.usuario.last_name }} · {{ profesional.especialidad }}<br>{{ profesional.centro }}, {{ profesional.comuna }}</p>
+            {% if cita.estado == "CANCELADA" and cita.motivo_cancelacion %}
+              <p>Motivo de la cancelación: {{ cita.motivo_cancelacion }}</p>
+            {% endif %}
+          </li>
+        {% endwith %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <section class="tarjeta" style="margin-top: 1.5rem;">
+      <p>Aún no tienes citas.</p>
+    </section>
+  {% endif %}
+{% endblock %}
