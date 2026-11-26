@@ -1,24 +1,48 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block titulo %}Agendar una cita{% endblock %}
 
 {% block contenido %}
-  <h1>Agendar una cita</h1>
-  <p>Estos profesionales están verificados y tienen horas disponibles. Elige uno para ver sus horarios.</p>
+  <header class="panel-saludo">
+    <div>
+      <h1>Agendar una cita</h1>
+      <p class="fecha">
+        Estos profesionales tienen su registro verificado y horas disponibles.
+      </p>
+    </div>
+  </header>
 
   {% if profesionales %}
     <div class="rejilla">
       {% for profesional in profesionales %}
         <section class="tarjeta opcion">
-          <h2>{{ profesional.usuario.first_name }} {{ profesional.usuario.last_name }}</h2>
-          <p>{{ profesional.especialidad }}<br>{{ profesional.centro }}, {{ profesional.comuna }}</p>
-          <a class="boton" href="{% url 'agenda:horarios_profesional' profesional.pk %}">Ver horarios</a>
+          <h2 class="heading-6">
+            {{ profesional.usuario.first_name|capfirst }} {{ profesional.usuario.last_name|capfirst }}
+          </h2>
+          <p class="body-6">
+            {{ profesional.especialidad|capfirst }}<br>
+            {{ profesional.centro|capfirst }}, {{ profesional.comuna|capfirst }}
+          </p>
+          <p><span class="estado estado-ACTIVA">Registro verificado</span></p>
+          <div class="acciones">
+            <a class="boton" href="{% url 'agenda:horarios_profesional' profesional.pk %}">Ver horarios</a>
+          </div>
         </section>
       {% endfor %}
     </div>
   {% else %}
-    <section class="tarjeta">
-      <p>Por ahora no hay profesionales con horas disponibles. Vuelve a revisar más tarde.</p>
-    </section>
+    <div class="vacio">
+      <span class="icono-circulo" aria-hidden="true">
+        <svg class="icono-grande" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-user-check"></use></svg>
+      </span>
+      <p class="body-6">
+        Por ahora no hay profesionales con horas disponibles.
+        Vuelve a revisar más tarde o avisa si tu molestia empeora.
+      </p>
+      <div class="acciones">
+        <a class="boton boton-secundario" href="{% url 'cuentas:inicio' %}">Volver al inicio</a>
+      </div>
+    </div>
   {% endif %}
 {% endblock %}

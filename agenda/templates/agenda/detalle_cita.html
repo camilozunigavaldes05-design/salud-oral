@@ -1,9 +1,13 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block titulo %}Gestionar cita{% endblock %}
 
 {% block contenido %}
-  <p><a href="{% url 'agenda:citas_profesional' %}">← Volver a mis citas</a></p>
+  <a class="volver" href="{% url 'agenda:citas_profesional' %}">
+    <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-arrow-left"></use></svg>
+    Volver a mis citas
+  </a>
   <section class="tarjeta">
     <h1>Cita de {{ cita.paciente.first_name }} {{ cita.paciente.last_name }}</h1>
     <p><span class="estado estado-{{ cita.estado }}">{{ cita.get_estado_display }}</span></p>

@@ -1,32 +1,48 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block titulo %}Avisos{% endblock %}
 
 {% block contenido %}
-  <h1>Mis avisos</h1>
-  <section class="tarjeta">
-    {% for aviso in pagina %}
-      <article class="aviso-item{% if aviso.pk in sin_leer %} nuevo{% endif %}">
-        <p class="fecha">{{ aviso.creada_en|date:"d/m/Y H:i" }}{% if aviso.pk in sin_leer %} · <strong>Nuevo</strong>{% endif %}</p>
-        <h2>{{ aviso.asunto }}</h2>
-        <p style="margin: 0;">{{ aviso.mensaje }}</p>
-        {% if aviso.cita_id %}
-          {% if user.rol == "PROFESIONAL" %}
-            <p style="margin: 0.5rem 0 0;"><a href="{% url 'agenda:detalle_cita' aviso.cita_id %}">Ver la cita</a></p>
-          {% elif user.rol == "PACIENTE" %}
-            <p style="margin: 0.5rem 0 0;"><a href="{% url 'agenda:mis_citas' %}">Ver mis citas</a></p>
+  <header class="panel-saludo">
+    <div>
+      <h1>Mis avisos</h1>
+      <p class="fecha">Confirmaciones, cambios y cancelaciones de tus citas.</p>
+    </div>
+  </header>
+
+  {% if pagina %}
+    <section class="tarjeta">
+      {% for aviso in pagina %}
+        <article class="aviso-item{% if aviso.pk in sin_leer %} nuevo{% endif %}" id="aviso-{{ aviso.pk }}">
+          <p class="fecha">
+            {{ aviso.creada_en|date:"j \d\e F \d\e Y, H:i" }}{% if aviso.pk in sin_leer %}
+              · <strong style="color: var(--accion);">Nuevo</strong>
+            {% endif %}
+          </p>
+          <h2>{{ aviso.asunto }}</h2>
+          <p class="body-6" style="color: var(--texto-suave);">{{ aviso.mensaje }}</p>
+          {% if aviso.cita_id %}
+            <div class="acciones" style="margin-top: 12px;">
+              {% if user.rol == "PROFESIONAL" %}
+                <a class="boton boton-secundario boton-chico" href="{% url 'agenda:detalle_cita' aviso.cita_id %}">Ver la cita</a>
+              {% elif user.rol == "PACIENTE" %}
+                <a class="boton boton-secundario boton-chico" href="{% url 'agenda:mis_citas' %}">Ver mis citas</a>
+              {% endif %}
+            </div>
           {% endif %}
-        {% endif %}
-      </article>
-    {% empty %}
-      <p>No tienes avisos.</p>
-    {% endfor %}
-  </section>
-  {% if pagina.has_other_pages %}
-    <div class="paginacion">
-      {% if pagina.has_previous %}<a href="?pagina={{ pagina.previous_page_number }}">← Más recientes</a>{% endif %}
-      <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
-      {% if pagina.has_next %}<a href="?pagina={{ pagina.next_page_number }}">Más antiguos →</a>{% endif %}
+        </article>
+      {% endfor %}
+    </section>
+
+    {% include "_paginacion.html" with etiqueta_anterior="Más recientes" etiqueta_siguiente="Más antiguos" %}
+
+  {% else %}
+    <div class="vacio">
+      <span class="icono-circulo" aria-hidden="true">
+        <svg class="icono-grande" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-bell"></use></svg>
+      </span>
+      <p class="body-6">Todavía no tienes avisos. Aquí aparecerán las confirmaciones de tus citas.</p>
     </div>
   {% endif %}
 {% endblock %}

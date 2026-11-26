@@ -669,8 +669,55 @@ ul.errorlist.nonfield {
 .icono-check  { width: 12px; height: 12px; }
 .icono-grande { width: 22px; height: 22px; }
 
+
+/* --- Encabezado de pagina interior --------------------------------------- */
+.volver {
+  display: inline-flex; align-items: center; gap: var(--s-50);
+  margin-bottom: var(--s-200);
+  color: var(--texto-suave);
+  font-size: 0.875rem; line-height: 1.25rem; font-weight: 500;
+  text-decoration: none;
+}
+.volver:hover { color: var(--accion); text-decoration: none; }
+.volver .icono { width: 16px; height: 16px; }
+
+
+/* --- Espera del analisis ------------------------------------------------- */
+.analizando { text-align: center; padding: var(--s-400) 0; }
+.analizando[hidden] { display: none; }
+.analizando p { margin: 0 0 var(--s-50); }
+.analizando .caption-2 { color: var(--texto-suave); margin-bottom: var(--s-300); }
+
+/* Barra indeterminada: no sabemos cuanto falta, solo que sigue trabajando.
+   La skill desaconseja los giradores circulares. */
+.barra-progreso {
+  height: 4px; border-radius: var(--r-full);
+  background: var(--gris-100); overflow: hidden;
+}
+.barra-progreso span {
+  display: block; height: 100%; width: 40%;
+  border-radius: var(--r-full); background: var(--accion);
+  animation: avanzar 1.6s var(--curva) infinite;
+}
+@keyframes avanzar {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .barra-progreso span { animation: none; width: 100%; opacity: 0.5; }
+}
+
 /* --- Estado vacio (B9) -------------------------------------------------- */
-.vacio { text-align: center; padding: var(--s-700) var(--s-300); color: var(--texto-suave); }
+.vacio {
+  text-align: center; padding: var(--s-700) var(--s-300);
+  color: var(--texto-suave);
+  background: var(--superficie); border: 1px solid var(--borde);
+  border-radius: var(--r-2xl);
+}
+.vacio p { max-width: 42ch; margin-left: auto; margin-right: auto; }
+.vacio .acciones { justify-content: center; }
+/* Dentro de una tarjeta o columna no repite el marco. */
+.tarjeta .vacio, .columna .vacio { background: none; border: 0; border-radius: 0; padding: var(--s-300) 0; }
 .vacio .icono-circulo { display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: var(--r-full); background: var(--accion-suave); color: var(--accion); margin-bottom: var(--s-200); }
 
 /* --- Pie ---------------------------------------------------------------- */

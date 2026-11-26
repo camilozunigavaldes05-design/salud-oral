@@ -1,28 +1,53 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block titulo %}Horarios disponibles{% endblock %}
 
 {% block contenido %}
-  <p><a href="{% url 'agenda:directorio' %}">← Volver a los profesionales</a></p>
+  <a class="volver" href="{% url 'agenda:directorio' %}">
+    <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-arrow-left"></use></svg>
+    Volver a los profesionales
+  </a>
+
   <section class="tarjeta">
-    <h1>{{ profesional.usuario.first_name }} {{ profesional.usuario.last_name }}</h1>
-    <p>{{ profesional.especialidad }} · {{ profesional.centro }}, {{ profesional.comuna }}</p>
-    <p class="aviso">Al elegir una hora, la guardamos para ti durante <strong>15 minutos</strong> mientras confirmas la solicitud.</p>
+    <header class="panel-saludo">
+      <div>
+        <h1>{{ profesional.usuario.first_name|capfirst }} {{ profesional.usuario.last_name|capfirst }}</h1>
+        <p class="fecha">
+          {{ profesional.especialidad|capfirst }} · {{ profesional.centro|capfirst }}, {{ profesional.comuna|capfirst }}
+        </p>
+      </div>
+    </header>
+
+    <p class="aviso">
+      Al elegir una hora, la guardamos para ti durante <strong>15 minutos</strong>
+      mientras confirmas la solicitud.
+    </p>
 
     {% for dia, horarios in dias %}
       <div class="dia">
-        <h3>{{ dia|date:"l j \d\e F"|capfirst }}</h3>
+        <h2 class="title-3">{{ dia|date:"l j \d\e F"|capfirst }}</h2>
         <div class="bloques">
           {% for horario in horarios %}
             <form method="post" action="{% url 'agenda:reservar' horario.pk %}">
               {% csrf_token %}
-              <button type="submit" class="boton boton-secundario bloque-hora">{{ horario.inicio|time:"H:i" }}</button>
+              <button type="submit" class="boton boton-secundario bloque-hora">
+                {{ horario.inicio|time:"H:i" }}
+              </button>
             </form>
           {% endfor %}
         </div>
       </div>
     {% empty %}
-      <p>Este profesional no tiene horas disponibles en este momento.</p>
+      <div class="vacio">
+        <span class="icono-circulo" aria-hidden="true">
+          <svg class="icono-grande" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-calendar-x"></use></svg>
+        </span>
+        <p class="body-6">Este profesional no tiene horas disponibles en este momento.</p>
+        <div class="acciones">
+          <a class="boton boton-secundario" href="{% url 'agenda:directorio' %}">Ver otros profesionales</a>
+        </div>
+      </div>
     {% endfor %}
   </section>
 {% endblock %}

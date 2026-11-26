@@ -1,9 +1,20 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block titulo %}Mis citas{% endblock %}
+{% block titulo %}Citas de mi agenda{% endblock %}
 
 {% block contenido %}
-  <h1>Citas de mi agenda</h1>
+  <header class="panel-saludo">
+    <div>
+      <h1>Citas de mi agenda</h1>
+      <p class="fecha">Confirma, reprograma o cancela las solicitudes de tus pacientes.</p>
+    </div>
+    <a class="boton boton-secundario" href="{% url 'agenda:mis_horarios' %}">
+      <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-clock"></use></svg>
+      Mis horarios
+    </a>
+  </header>
+
   <nav class="pestanas" aria-label="Filtro de citas">
     <a href="?ver=proximas" {% if ver != "todas" %}aria-current="page"{% endif %}>Próximas</a>
     <a href="?ver=todas" {% if ver == "todas" %}aria-current="page"{% endif %}>Todas</a>
@@ -12,22 +23,49 @@
   {% if citas %}
     <div class="tabla-contenedor">
       <table class="tabla">
+        <caption class="visually-hidden">
+          {% if ver == "todas" %}Todas tus citas{% else %}Tus citas próximas{% endif %}
+        </caption>
         <thead>
-          <tr><th>Fecha</th><th>Paciente</th><th>Estado</th><th></th></tr>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Paciente</th>
+            <th scope="col">Estado</th>
+            <th scope="col"><span class="visually-hidden">Acciones</span></th>
+          </tr>
         </thead>
         <tbody>
           {% for cita in citas %}
             <tr>
-              <td>{{ cita.horario.inicio|date:"d/m/Y" }}<br>{{ cita.horario.inicio|time:"H:i" }} – {{ cita.horario.fin|time:"H:i" }}</td>
-              <td>{{ cita.paciente.first_name }} {{ cita.paciente.last_name }}</td>
+              <td>
+                {{ cita.horario.inicio|date:"j \d\e F" }}<br>
+                <span class="fecha">{{ cita.horario.inicio|time:"H:i" }} a {{ cita.horario.fin|time:"H:i" }}</span>
+              </td>
+              <td>{{ cita.paciente.first_name|capfirst }} {{ cita.paciente.last_name|capfirst }}</td>
               <td><span class="estado estado-{{ cita.estado }}">{{ cita.get_estado_display }}</span></td>
-              <td><a class="boton boton-secundario boton-chico" href="{% url 'agenda:detalle_cita' cita.pk %}">Gestionar</a></td>
+              <td>
+                <a class="boton boton-secundario boton-chico" href="{% url 'agenda:detalle_cita' cita.pk %}">Gestionar</a>
+              </td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   {% else %}
-    <section class="tarjeta"><p>No hay citas para mostrar.</p></section>
+    <div class="vacio">
+      <span class="icono-circulo" aria-hidden="true">
+        <svg class="icono-grande" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-calendar-x"></use></svg>
+      </span>
+      <p class="body-6">
+        {% if ver == "todas" %}
+          Todavía no tienes ninguna cita registrada.
+        {% else %}
+          No tienes citas próximas. Publica horarios para que los pacientes puedan reservarte.
+        {% endif %}
+      </p>
+      <div class="acciones">
+        <a class="boton" href="{% url 'agenda:mis_horarios' %}">Publicar horarios</a>
+      </div>
+    </div>
   {% endif %}
 {% endblock %}

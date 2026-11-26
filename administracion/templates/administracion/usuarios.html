@@ -1,31 +1,53 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block titulo %}Usuarios{% endblock %}
 
 {% block contenido %}
-  <h1>Administración</h1>
+  <header class="panel-saludo">
+    <div>
+      <h1>Administración</h1>
+      <p class="fecha">Busca cuentas y suspéndelas o reactívalas.</p>
+    </div>
+  </header>
+
   {% include "administracion/_pestanas.html" with seccion="usuarios" %}
 
-  <form method="get" class="tarjeta" style="margin-bottom: 1.5rem;">
+  <form method="get" class="tarjeta" style="margin-bottom: 24px;">
     <div class="fila-campos">
-      {% for campo in form.visible_fields %}
-        <div class="campo">{{ campo.as_field_group }}</div>
-      {% endfor %}
-      <div class="campo"><button type="submit" class="boton">Filtrar</button></div>
+      {% include "_campos.html" %}
+      <div class="campo">
+        <button type="submit" class="boton">
+          <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-magnifying-glass"></use></svg>
+          Filtrar
+        </button>
+      </div>
     </div>
   </form>
 
   {% if pagina %}
     <div class="tabla-contenedor">
       <table class="tabla">
-        <thead><tr><th>Usuario</th><th>Rol</th><th>Estado</th><th>Registro</th><th></th></tr></thead>
+        <caption class="visually-hidden">Usuarios registrados</caption>
+        <thead>
+          <tr>
+            <th scope="col">Usuario</th>
+            <th scope="col">Rol</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Registro</th>
+            <th scope="col"><span class="visually-hidden">Acciones</span></th>
+          </tr>
+        </thead>
         <tbody>
           {% for usuario in pagina %}
             <tr>
-              <td>{{ usuario.first_name }} {{ usuario.last_name }}<br><span class="fecha">{{ usuario.email }}</span></td>
+              <td>
+                {{ usuario.first_name|capfirst }} {{ usuario.last_name|capfirst }}<br>
+                <span class="fecha">{{ usuario.email }}</span>
+              </td>
               <td>{{ usuario.get_rol_display }}</td>
               <td><span class="estado estado-{{ usuario.estado }}">{{ usuario.get_estado_display }}</span></td>
-              <td>{{ usuario.date_joined|date:"d/m/Y" }}</td>
+              <td>{{ usuario.date_joined|date:"j \d\e F \d\e Y" }}</td>
               <td>
                 {% if usuario.pk != user.pk %}
                   <form method="post" action="{% url 'administracion:estado_usuario' usuario.pk %}">
@@ -39,6 +61,8 @@
                       <button type="submit" class="boton boton-peligro boton-chico">Suspender</button>
                     {% endif %}
                   </form>
+                {% else %}
+                  <span class="caption-5" style="color: var(--texto-suave);">Tu cuenta</span>
                 {% endif %}
               </td>
             </tr>
@@ -46,14 +70,18 @@
         </tbody>
       </table>
     </div>
-    {% if pagina.has_other_pages %}
-      <div class="paginacion">
-        {% if pagina.has_previous %}<a href="?{{ parametros }}&pagina={{ pagina.previous_page_number }}">← Anterior</a>{% endif %}
-        <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
-        {% if pagina.has_next %}<a href="?{{ parametros }}&pagina={{ pagina.next_page_number }}">Siguiente →</a>{% endif %}
-      </div>
-    {% endif %}
+
+    {% include "_paginacion.html" %}
+
   {% else %}
-    <section class="tarjeta"><p>No hay usuarios que coincidan con el filtro.</p></section>
+    <div class="vacio">
+      <span class="icono-circulo" aria-hidden="true">
+        <svg class="icono-grande" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-magnifying-glass"></use></svg>
+      </span>
+      <p class="body-6">Ningún usuario coincide con el filtro. Prueba con otro correo o cambia el rol.</p>
+      <div class="acciones">
+        <a class="boton boton-secundario" href="{% url 'administracion:usuarios' %}">Limpiar el filtro</a>
+      </div>
+    </div>
   {% endif %}
 {% endblock %}

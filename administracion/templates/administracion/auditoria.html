@@ -1,30 +1,52 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block titulo %}Auditoría{% endblock %}
 
 {% block contenido %}
-  <h1>Administración</h1>
+  <header class="panel-saludo">
+    <div>
+      <h1>Administración</h1>
+      <p class="fecha">Quién hizo qué y cuándo.</p>
+    </div>
+  </header>
+
   {% include "administracion/_pestanas.html" with seccion="auditoria" %}
 
-  <form method="get" class="tarjeta" style="margin-bottom: 1.5rem;">
-    {{ form.non_field_errors }}
+  <form method="get" class="tarjeta" style="margin-bottom: 24px;">
     <div class="fila-campos">
-      {% for campo in form.visible_fields %}
-        <div class="campo">{{ campo.as_field_group }}</div>
-      {% endfor %}
-      <div class="campo"><button type="submit" class="boton">Filtrar</button></div>
+      {% include "_campos.html" %}
+      <div class="campo">
+        <button type="submit" class="boton">
+          <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-magnifying-glass"></use></svg>
+          Filtrar
+        </button>
+      </div>
     </div>
   </form>
 
   {% if pagina %}
+    <p class="caption-2" style="color: var(--texto-suave); margin-bottom: 12px;">
+      {{ pagina.paginator.count }} registro{{ pagina.paginator.count|pluralize }}
+    </p>
+
     <div class="tabla-contenedor">
       <table class="tabla">
-        <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Recurso</th><th>Resultado</th></tr></thead>
+        <caption class="visually-hidden">Registro de auditoría</caption>
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Usuario</th>
+            <th scope="col">Acción</th>
+            <th scope="col">Recurso</th>
+            <th scope="col">Resultado</th>
+          </tr>
+        </thead>
         <tbody>
           {% for registro in pagina %}
             <tr>
-              <td>{{ registro.fecha|date:"d/m/Y H:i:s" }}</td>
-              <td>{{ registro.usuario.email }}</td>
+              <td>{{ registro.fecha|date:"j/m/Y H:i:s" }}</td>
+              <td>{{ registro.usuario.email|default:"sin sesión" }}</td>
               <td>{{ registro.accion }}</td>
               <td>{{ registro.recurso }}</td>
               <td>{{ registro.resultado }}</td>
@@ -33,12 +55,18 @@
         </tbody>
       </table>
     </div>
-    <div class="paginacion">
-      {% if pagina.has_previous %}<a href="?{{ parametros }}&pagina={{ pagina.previous_page_number }}">← Más recientes</a>{% endif %}
-      <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }} · {{ pagina.paginator.count }} registros</span>
-      {% if pagina.has_next %}<a href="?{{ parametros }}&pagina={{ pagina.next_page_number }}">Más antiguos →</a>{% endif %}
-    </div>
+
+    {% include "_paginacion.html" with etiqueta_anterior="Más recientes" etiqueta_siguiente="Más antiguos" %}
+
   {% else %}
-    <section class="tarjeta"><p>No hay registros que coincidan con el filtro.</p></section>
+    <div class="vacio">
+      <span class="icono-circulo" aria-hidden="true">
+        <svg class="icono-grande" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-clipboard-text"></use></svg>
+      </span>
+      <p class="body-6">Ningún registro coincide con el filtro.</p>
+      <div class="acciones">
+        <a class="boton boton-secundario" href="{% url 'administracion:auditoria' %}">Limpiar el filtro</a>
+      </div>
+    </div>
   {% endif %}
 {% endblock %}

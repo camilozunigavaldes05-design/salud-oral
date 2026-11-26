@@ -1,0 +1,23 @@
+{% load static %}{% comment %}
+Paginación compartida. `parametros` es opcional: lleva los filtros activos
+para que al cambiar de página no se pierdan.
+{% endcomment %}
+{% if pagina.has_other_pages %}
+  <nav class="paginacion" aria-label="Paginación">
+    {% if pagina.has_previous %}
+      <a class="boton boton-secundario boton-chico" href="?{% if parametros %}{{ parametros }}&{% endif %}pagina={{ pagina.previous_page_number }}">
+        <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-caret-left"></use></svg>
+        {{ etiqueta_anterior|default:"Anterior" }}
+      </a>
+    {% endif %}
+    <span class="caption-2" style="color: var(--texto-suave);">
+      Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}
+    </span>
+    {% if pagina.has_next %}
+      <a class="boton boton-secundario boton-chico" href="?{% if parametros %}{{ parametros }}&{% endif %}pagina={{ pagina.next_page_number }}">
+        {{ etiqueta_siguiente|default:"Siguiente" }}
+        <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-caret-right"></use></svg>
+      </a>
+    {% endif %}
+  </nav>
+{% endif %}

@@ -1,36 +1,54 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block titulo %}Mis horarios{% endblock %}
 
 {% block contenido %}
-  <h1>Mis horarios de atención</h1>
+  <header class="panel-saludo">
+    <div>
+      <h1>Mis horarios de atención</h1>
+      <p class="fecha">Los bloques que publiques quedan visibles para los pacientes.</p>
+    </div>
+    <a class="boton boton-secundario" href="{% url 'agenda:citas_profesional' %}">
+      <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-calendar-check"></use></svg>
+      Mis citas
+    </a>
+  </header>
 
   <section class="tarjeta">
-    <h2 style="margin-top: 0;">Publicar nuevos bloques</h2>
+    <h2 class="heading-6">Publicar nuevos bloques</h2>
     <form method="post" novalidate>
       {% csrf_token %}
-      {{ form.non_field_errors }}
       <div class="fila-campos">
-        {% for campo in form.visible_fields %}
-          <div class="campo">{{ campo.as_field_group }}</div>
-        {% endfor %}
+        {% include "_campos.html" %}
       </div>
-      <p class="fecha">Si eliges una duración, el rango se divide en varios bloques seguidos. Por ejemplo, de 09:00 a 11:00 en bloques de 30 minutos publica 4 horas.</p>
-      <button type="submit" class="boton">Publicar</button>
+      <p class="ayuda">
+        Si eliges una duración, el rango se divide en varios bloques seguidos.
+        Por ejemplo, de 09:00 a 11:00 en bloques de 30 minutos publica 4 horas.
+      </p>
+      <div class="acciones">
+        <button type="submit" class="boton">
+          <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-plus"></use></svg>
+          Publicar
+        </button>
+      </div>
     </form>
   </section>
 
-  <section class="tarjeta" style="margin-top: 1.5rem;">
-    <h2 style="margin-top: 0;">Próximos bloques</h2>
+  <section class="tarjeta" style="margin-top: 24px;">
+    <h2 class="heading-6">Próximos bloques</h2>
     {% for dia, horarios in dias %}
       <div class="dia">
-        <h3>{{ dia|date:"l j \d\e F"|capfirst }}</h3>
+        <h3 class="title-3">{{ dia|date:"l j \d\e F"|capfirst }}</h3>
         {% for horario in horarios %}
           <div class="item-horario">
-            <span class="hora">{{ horario.inicio|time:"H:i" }} – {{ horario.fin|time:"H:i" }}</span>
+            <span class="hora">{{ horario.inicio|time:"H:i" }} a {{ horario.fin|time:"H:i" }}</span>
             {% if horario.cita_vigente %}
               <span class="estado estado-RESERVADO">Reservado</span>
-              <a href="{% url 'agenda:detalle_cita' horario.cita_vigente.pk %}">{{ horario.cita_vigente.paciente.first_name }} {{ horario.cita_vigente.paciente.last_name }}</a>
+              <a href="{% url 'agenda:detalle_cita' horario.cita_vigente.pk %}">
+                {{ horario.cita_vigente.paciente.first_name|capfirst }}
+                {{ horario.cita_vigente.paciente.last_name|capfirst }}
+              </a>
             {% else %}
               <span class="estado estado-DISPONIBLE">Disponible</span>
               <form method="post" action="{% url 'agenda:borrar_horario' horario.pk %}">
@@ -42,7 +60,12 @@
         {% endfor %}
       </div>
     {% empty %}
-      <p>Aún no tienes bloques publicados.</p>
+      <div class="vacio">
+        <span class="icono-circulo" aria-hidden="true">
+          <svg class="icono-grande" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-clock"></use></svg>
+        </span>
+        <p class="body-6">Todavía no tienes bloques publicados. Usa el formulario de arriba para abrir tus primeras horas.</p>
+      </div>
     {% endfor %}
   </section>
 {% endblock %}

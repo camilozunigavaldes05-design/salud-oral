@@ -1,68 +1,120 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block titulo %}Profesionales{% endblock %}
 
 {% block contenido %}
-  <h1>Administración</h1>
+  <header class="panel-saludo">
+    <div>
+      <h1>Administración</h1>
+      <p class="fecha">Aprueba o rechaza los registros pendientes.</p>
+    </div>
+  </header>
+
   {% include "administracion/_pestanas.html" with seccion="profesionales" %}
 
-  <h2>Pendientes de verificación ({{ pendientes|length }})</h2>
-  <p>Revisa cada número de registro en el
-    <a href="https://rnpi.superdesalud.gob.cl/" target="_blank" rel="noopener">Registro Nacional de Prestadores Individuales de Salud</a>
-    antes de verificarlo.</p>
+  <section>
+    <h2 class="heading-6">Pendientes de verificación ({{ pendientes|length }})</h2>
+    <p class="aviso">
+      Revisa cada número de registro en el
+      <a href="https://rnpi.superdesalud.gob.cl/" target="_blank" rel="noopener">Registro Nacional
+      de Prestadores Individuales de Salud</a> antes de verificarlo.
+    </p>
 
-  {% if pendientes %}
-    <div class="tabla-contenedor">
-      <table class="tabla">
-        <thead>
-          <tr><th>Profesional</th><th>Registro</th><th>Especialidad y centro</th><th>Solicitud</th><th></th></tr>
-        </thead>
-        <tbody>
-          {% for profesional in pendientes %}
+    {% if pendientes %}
+      <div class="tabla-contenedor" style="margin-top: 16px;">
+        <table class="tabla">
+          <caption class="visually-hidden">Profesionales pendientes de verificación</caption>
+          <thead>
             <tr>
-              <td>{{ profesional.usuario.first_name }} {{ profesional.usuario.last_name }}<br><span class="fecha">{{ profesional.usuario.email }}</span></td>
-              <td>{{ profesional.registro }}</td>
-              <td>{{ profesional.especialidad }}<br><span class="fecha">{{ profesional.centro }}, {{ profesional.comuna }}</span></td>
-              <td>{{ profesional.usuario.date_joined|date:"d/m/Y" }}</td>
-              <td>
-                <div class="acciones" style="margin: 0;">
-                  <form method="post" action="{% url 'administracion:decidir_profesional' profesional.pk 'verificar' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="boton boton-chico">Verificar</button>
-                  </form>
-                  <form method="post" action="{% url 'administracion:decidir_profesional' profesional.pk 'rechazar' %}" onsubmit="return confirm('¿Rechazar el registro de {{ profesional.usuario.email|escapejs }}?');">
-                    {% csrf_token %}
-                    <button type="submit" class="boton boton-peligro boton-chico">Rechazar</button>
-                  </form>
-                </div>
-              </td>
+              <th scope="col">Profesional</th>
+              <th scope="col">Registro</th>
+              <th scope="col">Especialidad y centro</th>
+              <th scope="col">Solicitud</th>
+              <th scope="col"><span class="visually-hidden">Acciones</span></th>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  {% else %}
-    <section class="tarjeta"><p>No hay profesionales pendientes.</p></section>
-  {% endif %}
+          </thead>
+          <tbody>
+            {% for profesional in pendientes %}
+              <tr>
+                <td>
+                  {{ profesional.usuario.first_name|capfirst }} {{ profesional.usuario.last_name|capfirst }}<br>
+                  <span class="fecha">{{ profesional.usuario.email }}</span>
+                </td>
+                <td>{{ profesional.registro }}</td>
+                <td>
+                  {{ profesional.especialidad|capfirst }}<br>
+                  <span class="fecha">{{ profesional.centro|capfirst }}, {{ profesional.comuna|capfirst }}</span>
+                </td>
+                <td>{{ profesional.usuario.date_joined|date:"j \d\e F \d\e Y" }}</td>
+                <td>
+                  <div class="acciones" style="margin: 0;">
+                    <form method="post" action="{% url 'administracion:decidir_profesional' profesional.pk 'verificar' %}">
+                      {% csrf_token %}
+                      <button type="submit" class="boton boton-chico">Verificar</button>
+                    </form>
+                    {# El confirm es una barrera a proposito: rechazar es irreversible. #}
+                    <form method="post" action="{% url 'administracion:decidir_profesional' profesional.pk 'rechazar' %}"
+                          onsubmit="return confirm('¿Rechazar el registro de {{ profesional.usuario.email|escapejs }}?');">
+                      {% csrf_token %}
+                      <button type="submit" class="boton boton-peligro boton-chico">Rechazar</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="vacio" style="margin-top: 16px;">
+        <span class="icono-circulo" aria-hidden="true">
+          <svg class="icono-grande" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-list-checks"></use></svg>
+        </span>
+        <p class="body-6">No hay solicitudes esperando revisión.</p>
+      </div>
+    {% endif %}
+  </section>
 
-  <h2 style="margin-top: 2rem;">Profesionales verificados ({{ verificados|length }})</h2>
-  {% if verificados %}
-    <div class="tabla-contenedor">
-      <table class="tabla">
-        <thead><tr><th>Profesional</th><th>Registro</th><th>Especialidad y centro</th><th>Estado</th></tr></thead>
-        <tbody>
-          {% for profesional in verificados %}
+  <section style="margin-top: 40px;">
+    <h2 class="heading-6">Profesionales verificados ({{ verificados|length }})</h2>
+    {% if verificados %}
+      <div class="tabla-contenedor" style="margin-top: 16px;">
+        <table class="tabla">
+          <caption class="visually-hidden">Profesionales ya verificados</caption>
+          <thead>
             <tr>
-              <td>{{ profesional.usuario.first_name }} {{ profesional.usuario.last_name }}<br><span class="fecha">{{ profesional.usuario.email }}</span></td>
-              <td>{{ profesional.registro }}</td>
-              <td>{{ profesional.especialidad }}<br><span class="fecha">{{ profesional.centro }}, {{ profesional.comuna }}</span></td>
-              <td><span class="estado estado-{{ profesional.usuario.estado }}">{{ profesional.usuario.get_estado_display }}</span></td>
+              <th scope="col">Profesional</th>
+              <th scope="col">Registro</th>
+              <th scope="col">Especialidad y centro</th>
+              <th scope="col">Estado</th>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  {% else %}
-    <section class="tarjeta"><p>Aún no hay profesionales verificados.</p></section>
-  {% endif %}
+          </thead>
+          <tbody>
+            {% for profesional in verificados %}
+              <tr>
+                <td>
+                  {{ profesional.usuario.first_name|capfirst }} {{ profesional.usuario.last_name|capfirst }}<br>
+                  <span class="fecha">{{ profesional.usuario.email }}</span>
+                </td>
+                <td>{{ profesional.registro }}</td>
+                <td>
+                  {{ profesional.especialidad|capfirst }}<br>
+                  <span class="fecha">{{ profesional.centro|capfirst }}, {{ profesional.comuna|capfirst }}</span>
+                </td>
+                <td><span class="estado estado-{{ profesional.usuario.estado }}">{{ profesional.usuario.get_estado_display }}</span></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="vacio" style="margin-top: 16px;">
+        <span class="icono-circulo" aria-hidden="true">
+          <svg class="icono-grande" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-user-check"></use></svg>
+        </span>
+        <p class="body-6">Todavía no hay profesionales verificados.</p>
+      </div>
+    {% endif %}
+  </section>
 {% endblock %}

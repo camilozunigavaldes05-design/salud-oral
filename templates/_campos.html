@@ -1,0 +1,15 @@
+{% comment %}
+Campos de un formulario, con etiqueta arriba y error abajo.
+Compartido por todas las apps: evita repetir el marcado y los dos puntos
+que Django agrega por defecto a las etiquetas.
+{% endcomment %}
+{{ form.non_field_errors }}
+{% for campo in form.visible_fields %}
+  <div class="campo{% if campo.field.widget.input_type == 'checkbox' %} casilla{% endif %}">
+    {{ campo.errors }}
+    <label for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+    {{ campo }}
+    {% if campo.help_text %}<div class="ayuda" id="{{ campo.auto_id }}_helptext">{{ campo.help_text }}</div>{% endif %}
+  </div>
+{% endfor %}
+{% for campo in form.hidden_fields %}{{ campo }}{% endfor %}

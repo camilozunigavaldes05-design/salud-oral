@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block titulo %}Confirmar solicitud{% endblock %}
 
@@ -26,31 +27,14 @@
       {% csrf_token %}
       <button type="submit" class="boton boton-ancho" id="boton-confirmar">Enviar solicitud</button>
     </form>
-    <form method="post" action="{% url 'agenda:soltar' bloqueo.pk %}" style="margin-top: 0.75rem;">
+    <form method="post" action="{% url 'agenda:soltar' bloqueo.pk %}" class="acciones" style="margin-top: 12px;">
       {% csrf_token %}
       <button type="submit" class="boton boton-secundario boton-ancho">Elegir otra hora</button>
     </form>
   </section>
 
-  <script>
-    (function () {
-      var contador = document.getElementById("contador");
-      var boton = document.getElementById("boton-confirmar");
-      var restante = parseInt(contador.dataset.segundos, 10);
-      function mostrar() {
-        if (restante <= 0) {
-          contador.textContent = "0:00";
-          boton.disabled = true;
-          boton.textContent = "El tiempo terminó: elige otra hora";
-          return;
-        }
-        var minutos = Math.floor(restante / 60);
-        var segundos = restante % 60;
-        contador.textContent = minutos + ":" + (segundos < 10 ? "0" : "") + segundos;
-        restante -= 1;
-        setTimeout(mostrar, 1000);
-      }
-      mostrar();
-    })();
-  </script>
+{% endblock %}
+
+{% block guiones %}
+  <script src="{% static 'js/cuenta-regresiva.js' %}" defer></script>
 {% endblock %}

@@ -1,37 +1,51 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block titulo %}Mi historial{% endblock %}
 
 {% block contenido %}
-  <h1>Mi historial de evaluaciones</h1>
-  <div class="acciones">
-    <a class="boton" href="{% url 'evaluaciones:nueva' %}">Nueva evaluación</a>
-  </div>
+  <header class="panel-saludo">
+    <div>
+      <h1>Mi historial</h1>
+      <p class="fecha">Todas tus evaluaciones, de la más reciente a la más antigua.</p>
+    </div>
+    <a class="boton" href="{% url 'evaluaciones:nueva' %}">
+      <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-camera"></use></svg>
+      Nueva evaluación
+    </a>
+  </header>
 
   {% if evaluaciones %}
-    <ol class="linea-tiempo" style="margin-top: 1.5rem;">
+    <ol class="linea-tiempo">
       {% for evaluacion in evaluaciones %}
         <li>
           <article class="tarjeta item-historial">
             {% if evaluacion.imagen_uri %}
-              <img src="{% url 'evaluaciones:imagen' evaluacion.pk %}" alt="Fotografía del {{ evaluacion.fecha|date:'d/m/Y' }}" loading="lazy">
+              <img src="{% url 'evaluaciones:imagen' evaluacion.pk %}"
+                   alt="Fotografía de la evaluación del {{ evaluacion.fecha|date:'j \d\e F \d\e Y' }}" loading="lazy">
             {% endif %}
             <div class="datos">
-              <p class="fecha">{{ evaluacion.fecha|date:"d/m/Y H:i" }}</p>
+              <p class="fecha">{{ evaluacion.fecha|date:"j \d\e F, H:i" }}</p>
               {% if evaluacion.riesgo %}
                 <span class="nivel nivel-{{ evaluacion.riesgo }}">Riesgo {{ evaluacion.get_riesgo_display|lower }}</span>
               {% else %}
-                <span class="nivel">No completada</span>
+                <span class="estado estado-{{ evaluacion.estado }}">{{ evaluacion.get_estado_display }}</span>
               {% endif %}
             </div>
-            <a class="boton boton-secundario" href="{% url 'evaluaciones:detalle' evaluacion.pk %}">Ver detalle</a>
+            <a class="boton boton-secundario boton-chico" href="{% url 'evaluaciones:detalle' evaluacion.pk %}">Ver detalle</a>
           </article>
         </li>
       {% endfor %}
     </ol>
   {% else %}
-    <section class="tarjeta" style="margin-top: 1.5rem;">
-      <p>Aún no tienes evaluaciones. Cuando hagas la primera, aparecerá aquí.</p>
-    </section>
+    <div class="vacio">
+      <span class="icono-circulo" aria-hidden="true">
+        <svg class="icono-grande" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-image-square"></use></svg>
+      </span>
+      <p class="body-6">Aún no tienes evaluaciones. Cuando hagas la primera, aparecerá aquí con su nivel de riesgo.</p>
+      <div class="acciones">
+        <a class="boton" href="{% url 'evaluaciones:nueva' %}">Hacer la primera</a>
+      </div>
+    </div>
   {% endif %}
 {% endblock %}
