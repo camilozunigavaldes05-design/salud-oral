@@ -21,58 +21,56 @@
       <aside class="barra" aria-label="Navegación principal">
         <a class="barra-marca" href="{% url 'cuentas:inicio' %}">
           <span class="logo" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 5.5c-1.6-1-2.9-1.5-4.3-1.5C5.1 4 3.5 5.8 3.5 8.6c0 2.1.6 3.4 1.1 5.1.45 1.5.6 3.2.75 4.8.12 1.3.5 2.9 1.6 2.9 1 0 1.3-1.3 1.55-2.8.22-1.3.4-2.5 1.2-2.5s.98 1.2 1.2 2.5c.25 1.5.55 2.8 1.55 2.8 1.1 0 1.48-1.6 1.6-2.9.15-1.6.3-3.3.75-4.8.5-1.7 1.1-3 1.1-5.1 0-2.8-1.6-4.6-4.2-4.6-1.4 0-2.7.5-4.3 1.5Z"/>
-            </svg>
+            <svg class="icono-marca" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-tooth"></use></svg>
           </span>
           <span class="barra-nombre">Salud Oral</span>
         </a>
 
         <nav class="barra-menu">
           <a href="{% url 'cuentas:inicio' %}"{% if request.resolver_match.view_name == 'cuentas:inicio' %} aria-current="page"{% endif %}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg>
+            <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-house"></use></svg>
             <span>Inicio</span>
           </a>
 
           {% if user.rol == "PACIENTE" %}
             <a href="{% url 'evaluaciones:nueva' %}"{% if request.resolver_match.view_name == 'evaluaciones:nueva' %} aria-current="page"{% endif %}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+              <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-camera"></use></svg>
               <span>Nueva evaluación</span>
             </a>
             <a href="{% url 'evaluaciones:historial' %}"{% if request.resolver_match.view_name == 'evaluaciones:historial' %} aria-current="page"{% endif %}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v4l3 2"/><path d="M3.5 12a8.5 8.5 0 1 0 2.2-5.7"/><path d="M3 4v4h4"/></svg>
+              <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-clock-counter-clockwise"></use></svg>
               <span>Mi historial</span>
             </a>
             <a href="{% url 'agenda:directorio' %}"{% if request.resolver_match.view_name == 'agenda:directorio' %} aria-current="page"{% endif %}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-calendar-dots"></use></svg>
               <span>Agendar cita</span>
             </a>
             <a href="{% url 'agenda:mis_citas' %}"{% if request.resolver_match.view_name == 'agenda:mis_citas' %} aria-current="page"{% endif %}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/><path d="m9 15 2 2 4-4"/></svg>
+              <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-calendar-check"></use></svg>
               <span>Mis citas</span>
             </a>
 
           {% elif user.rol == "PROFESIONAL" %}
             <a href="{% url 'agenda:mis_horarios' %}"{% if request.resolver_match.view_name == 'agenda:mis_horarios' %} aria-current="page"{% endif %}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-clock"></use></svg>
               <span>Mis horarios</span>
             </a>
             <a href="{% url 'agenda:citas_profesional' %}"{% if request.resolver_match.view_name == 'agenda:citas_profesional' %} aria-current="page"{% endif %}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/><path d="m9 15 2 2 4-4"/></svg>
+              <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-calendar-check"></use></svg>
               <span>Mis citas</span>
             </a>
 
           {% elif user.rol == "ADMINISTRADOR" %}
             <a href="{% url 'administracion:profesionales' %}"{% if request.resolver_match.view_name == 'administracion:profesionales' %} aria-current="page"{% endif %}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m17 11 2 2 4-4"/></svg>
+              <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-user-check"></use></svg>
               <span>Profesionales</span>
             </a>
             <a href="{% url 'administracion:usuarios' %}"{% if request.resolver_match.view_name == 'administracion:usuarios' %} aria-current="page"{% endif %}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+              <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-users"></use></svg>
               <span>Usuarios</span>
             </a>
             <a href="{% url 'administracion:auditoria' %}"{% if request.resolver_match.view_name == 'administracion:auditoria' %} aria-current="page"{% endif %}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
+              <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-file-text"></use></svg>
               <span>Auditoría</span>
             </a>
           {% endif %}
@@ -81,7 +79,7 @@
         <form class="barra-salir" method="post" action="{% url 'cuentas:logout' %}">
           {% csrf_token %}
           <button type="submit">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg>
+            <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-sign-out"></use></svg>
             <span>Cerrar sesión</span>
           </button>
         </form>
@@ -94,9 +92,7 @@
         <header class="encabezado">
           <a class="marca solo-movil" href="{% url 'cuentas:inicio' %}">
             <span class="logo" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 5.5c-1.6-1-2.9-1.5-4.3-1.5C5.1 4 3.5 5.8 3.5 8.6c0 2.1.6 3.4 1.1 5.1.45 1.5.6 3.2.75 4.8.12 1.3.5 2.9 1.6 2.9 1 0 1.3-1.3 1.55-2.8.22-1.3.4-2.5 1.2-2.5s.98 1.2 1.2 2.5c.25 1.5.55 2.8 1.55 2.8 1.1 0 1.48-1.6 1.6-2.9.15-1.6.3-3.3.75-4.8.5-1.7 1.1-3 1.1-5.1 0-2.8-1.6-4.6-4.2-4.6-1.4 0-2.7.5-4.3 1.5Z"/>
-              </svg>
+              <svg class="icono-marca" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-tooth"></use></svg>
             </span>
             Salud Oral
           </a>

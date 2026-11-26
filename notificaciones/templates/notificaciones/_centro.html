@@ -1,3 +1,4 @@
+{% load static %}
 {% comment %}
 Centro de notificaciones del encabezado.
 Sin JavaScript el boton es un enlace normal a la lista completa.
@@ -8,9 +9,7 @@ Sin JavaScript el boton es un enlace normal a la lista completa.
      aria-expanded="false"
      aria-controls="panel-avisos"
      aria-label="Avisos{% if avisos_sin_leer %}, {{ avisos_sin_leer }} sin leer{% endif %}">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>
-    </svg>
+    <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-bell"></use></svg>
     <span class="campana-texto">Avisos</span>
     {% if avisos_sin_leer %}<span class="contador">{{ avisos_sin_leer }}</span>{% endif %}
   </a>

@@ -37,6 +37,8 @@
   --superficie:        var(--blanco);
   --superficie-base:   var(--gris-50);
   --borde:             var(--gris-200);
+  /* Borde de controles: 3,09:1 sobre blanco, exigido por WCAG 1.4.11. */
+  --borde-campo:       #8594a9;
   --texto:             var(--gris-900);
   --texto-suave:       var(--gris-500);
   --accion:            var(--azul-600);
@@ -168,6 +170,7 @@ main.contenedor { padding-top: var(--s-500); padding-bottom: var(--s-800); }
   display: grid;
   grid-template-columns: var(--ancho-barra) minmax(0, 1fr);
   min-height: 100vh;
+  min-height: 100dvh;
 }
 .app-cuerpo { display: flex; flex-direction: column; min-width: 0; }
 /* El contenido y la columna comparten fila; el pie queda siempre al final. */
@@ -181,7 +184,7 @@ main.contenedor { padding-top: var(--s-500); padding-bottom: var(--s-800); }
   background: var(--azul-900);
   color: #fff;
   padding: var(--s-300) var(--s-200);
-  position: sticky; top: 0; height: 100vh;
+  position: sticky; top: 0; height: 100vh; height: 100dvh;
 }
 .barra-marca {
   display: flex; align-items: center; gap: var(--s-100);
@@ -204,7 +207,6 @@ main.contenedor { padding-top: var(--s-500); padding-bottom: var(--s-800); }
   text-decoration: none; text-align: left;
   transition: background var(--dur-color) var(--curva), color var(--dur-color) var(--curva);
 }
-.barra-menu a svg, .barra-salir button svg { width: 20px; height: 20px; flex-shrink: 0; }
 .barra-menu a:hover, .barra-salir button:hover {
   background: rgba(255, 255, 255, 0.10); color: #fff; text-decoration: none;
 }
@@ -327,14 +329,14 @@ select, textarea {
   width: 100%;
   padding: var(--s-75) var(--s-100);
   min-height: 40px;
-  border: 1px solid var(--gris-300);
+  border: 1px solid var(--borde-campo);
   border-radius: var(--r-lg);
   background: var(--superficie);
   color: var(--texto);
   font-family: inherit; font-size: 1rem; line-height: 1.5rem;
   transition: border-color var(--dur-color) var(--curva), box-shadow var(--dur-color) var(--curva);
 }
-input:hover, select:hover, textarea:hover { border-color: var(--gris-500); }
+input:hover, select:hover, textarea:hover { border-color: var(--gris-700); }
 input:focus, select:focus, textarea:focus {
   outline: none; border-color: var(--accion);
   box-shadow: 0 0 0 3px var(--azul-100);
@@ -344,7 +346,7 @@ textarea { min-height: 96px; resize: vertical; }
 
 input[type="file"] {
   width: 100%; padding: var(--s-200);
-  border: 1px dashed var(--gris-300); border-radius: var(--r-xl);
+  border: 1px dashed var(--borde-campo); border-radius: var(--r-xl);
   background: var(--gris-50); font: inherit; cursor: pointer;
   transition: border-color var(--dur-color) var(--curva), background var(--dur-color) var(--curva);
 }
@@ -566,7 +568,6 @@ ul.errorlist.nonfield {
   text-decoration: none; cursor: pointer;
   transition: background var(--dur-color) var(--curva), color var(--dur-color) var(--curva);
 }
-.campana svg { width: 18px; height: 18px; }
 .campana:hover { background: var(--accion-suave); color: var(--accion); text-decoration: none; }
 .campana[aria-expanded="true"] { background: var(--accion-suave); color: var(--accion); }
 
@@ -656,9 +657,21 @@ ul.errorlist.nonfield {
 .bloque-columna .tarjeta { padding: var(--s-200); border-radius: var(--r-xl); }
 .columna .vacio { padding: var(--s-300) var(--s-100); }
 
+
+/* --- Iconos (Phosphor, sprite en static/img/iconos.svg) ----------------- */
+.icono, .icono-marca, .icono-check, .icono-grande {
+  flex-shrink: 0;
+  fill: currentColor;
+  display: block;
+}
+.icono        { width: 20px; height: 20px; }
+.icono-marca  { width: 18px; height: 18px; }
+.icono-check  { width: 12px; height: 12px; }
+.icono-grande { width: 22px; height: 22px; }
+
 /* --- Estado vacio (B9) -------------------------------------------------- */
 .vacio { text-align: center; padding: var(--s-700) var(--s-300); color: var(--texto-suave); }
-.vacio .icono { display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: var(--r-full); background: var(--accion-suave); color: var(--accion); margin-bottom: var(--s-200); }
+.vacio .icono-circulo { display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: var(--r-full); background: var(--accion-suave); color: var(--accion); margin-bottom: var(--s-200); }
 
 /* --- Pie ---------------------------------------------------------------- */
 .pie {
@@ -676,7 +689,7 @@ ul.errorlist.nonfield {
 .pie nav { display: flex; flex-wrap: wrap; gap: var(--s-200); }
 
 /* --- Autenticacion: pantalla partida ------------------------------------ */
-.auth { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+.auth { min-height: 100vh; min-height: 100dvh; display: grid; grid-template-columns: 1fr 1fr; }
 .auth-panel {
   display: flex; flex-direction: column; justify-content: center;
   padding: var(--s-600) var(--s-500); background: var(--superficie);
