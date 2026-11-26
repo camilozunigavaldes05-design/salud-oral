@@ -1,19 +1,52 @@
-{% extends "base.html" %}
+{% extends "base_auth.html" %}
 
 {% block titulo %}Registro de profesionales{% endblock %}
 
 {% block contenido %}
-  <section class="tarjeta tarjeta-estrecha">
-    <h1>Registro de profesionales</h1>
-    <p class="aviso">
-      Tu cuenta quedará <strong>pendiente de verificación</strong>. Podrás ingresar cuando un
-      administrador confirme tus datos en el Registro Nacional de Prestadores Individuales de Salud.
-    </p>
-    <form method="post" novalidate>
-      {% csrf_token %}
-      {% include "cuentas/_formulario.html" %}
-      <button type="submit" class="boton boton-ancho">Enviar registro</button>
-    </form>
-    <p>¿Ya tienes cuenta? <a href="{% url 'cuentas:login' %}">Inicia sesión</a>.</p>
-  </section>
+  <h1>Registro de profesionales</h1>
+  <p class="auth-intro">Validamos tu número de registro antes de habilitar la cuenta.</p>
+
+  <p class="aviso">
+    Tu cuenta quedará <strong>pendiente de verificación</strong>. Podrás ingresar cuando un
+    administrador confirme tus datos en el Registro Nacional de Prestadores Individuales de Salud.
+  </p>
+
+  <form method="post" novalidate style="margin-top: 16px;">
+    {% csrf_token %}
+    {% include "cuentas/_formulario.html" %}
+    <button type="submit" class="boton boton-ancho">Enviar registro</button>
+  </form>
+
+  <p class="auth-pie">
+    ¿Ya tienes cuenta? <a href="{% url 'cuentas:login' %}">Inicia sesión</a>
+  </p>
+{% endblock %}
+
+{% block lado %}
+  <h2>Atiende a pacientes que<br>llegan a tiempo</h2>
+  <p>Publicas tus horarios y recibes solicitudes de pacientes que ya pasaron por una evaluación.</p>
+  <ul class="auth-lista">
+    <li>
+      <span class="marca-check" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+      </span>
+      Defines tus bloques de atención y los liberas cuando quieras
+    </li>
+    <li>
+      <span class="marca-check" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+      </span>
+      Confirmas o reprogramas cada solicitud desde un solo panel
+    </li>
+    <li>
+      <span class="marca-check" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+      </span>
+      Tu registro queda validado por un administrador antes de aparecer
+    </li>
+  </ul>
+  <p class="auth-nota">
+    La evaluación que trae el paciente es orientativa y no constituye un diagnóstico.
+    El criterio clínico es siempre tuyo.
+  </p>
 {% endblock %}

@@ -11,4 +11,5 @@ urlpatterns = [
     path("registro/", views.registro_paciente, name="registro_paciente"),
     path("registro/profesional/", views.registro_profesional, name="registro_profesional"),
     path("inicio/", views.inicio, name="inicio"),
+    path("mis-datos/", views.mi_ficha, name="mi_ficha"),
 ]

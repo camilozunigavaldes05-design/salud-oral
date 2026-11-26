@@ -3,26 +3,130 @@
 {% block titulo %}Inicio{% endblock %}
 
 {% block contenido %}
-  <h1>Hola, {{ user.first_name }}</h1>
-  <p>¿Qué quieres hacer hoy?</p>
-  <div class="rejilla">
-    <section class="tarjeta opcion">
-      <h2>Nueva evaluación</h2>
-      <p>Fotografía tu boca y obtén una orientación sobre tu nivel de riesgo.</p>
-      <a class="boton" href="{% url 'evaluaciones:nueva' %}">Comenzar</a>
+  <header class="panel-saludo">
+    <div>
+      <h1>Hola, {{ user.first_name|capfirst }}</h1>
+      <p class="fecha">{{ hoy|date:"l j \d\e F, Y"|capfirst }}</p>
+    </div>
+    <a class="boton" href="{% url 'evaluaciones:nueva' %}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14.5 4h-5L7 7H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-3Z"/><circle cx="12" cy="13" r="3.5"/>
+      </svg>
+      Nueva evaluación
+    </a>
+  </header>
+
+  <div class="panel">
+    <section class="tarjeta panel-destacado">
+      <h2 class="title-4" style="color: var(--texto-suave);">Última evaluación</h2>
+      {% if ultima_evaluacion %}
+        {% if ultima_evaluacion.riesgo %}
+          <p><span class="nivel nivel-{{ ultima_evaluacion.riesgo }}">Riesgo {{ ultima_evaluacion.get_riesgo_display|lower }}</span></p>
+        {% else %}
+          <p><span class="estado estado-{{ ultima_evaluacion.estado }}">{{ ultima_evaluacion.get_estado_display }}</span></p>
+        {% endif %}
+        <p class="fecha">{{ ultima_evaluacion.fecha|date:"j \d\e F, H:i" }}</p>
+        <div class="acciones">
+          <a class="boton boton-secundario boton-chico" href="{% url 'evaluaciones:detalle' ultima_evaluacion.pk %}">Ver reporte</a>
+        </div>
+      {% else %}
+        <div class="vacio" style="padding: 24px 0;">
+          <p class="body-6">Todavía no tienes evaluaciones.</p>
+          <a class="boton boton-chico" href="{% url 'evaluaciones:nueva' %}">Hacer la primera</a>
+        </div>
+      {% endif %}
     </section>
-    <section class="tarjeta opcion">
-      <h2>Mi historial</h2>
-      <p>Revisa tus evaluaciones anteriores.</p>
-      <a class="boton boton-secundario" href="{% url 'evaluaciones:historial' %}">Ver historial</a>
+
+    <section class="tarjeta panel-destacado">
+      <h2 class="title-4" style="color: var(--texto-suave);">Próxima cita</h2>
+      {% if proxima_cita %}
+        <p class="body-1">{{ proxima_cita.horario.inicio|date:"j \d\e F, H:i" }}</p>
+        <p class="body-6" style="color: var(--texto-suave);">
+          {{ proxima_cita.horario.profesional.usuario.first_name }}
+          {{ proxima_cita.horario.profesional.usuario.last_name }}<br>
+          {{ proxima_cita.horario.profesional.centro }}, {{ proxima_cita.horario.profesional.comuna }}
+        </p>
+        <p><span class="estado estado-{{ proxima_cita.estado }}">{{ proxima_cita.get_estado_display }}</span></p>
+        <div class="acciones">
+          <a class="boton boton-secundario boton-chico" href="{% url 'agenda:resumen' proxima_cita.pk %}">Ver detalle</a>
+        </div>
+      {% else %}
+        <div class="vacio" style="padding: 24px 0;">
+          <p class="body-6">No tienes citas agendadas.</p>
+          <a class="boton boton-chico" href="{% url 'agenda:directorio' %}">Agendar una hora</a>
+        </div>
+      {% endif %}
     </section>
-    <section class="tarjeta opcion">
-      <h2>Agendar una cita</h2>
-      <p>Solicita una hora con un profesional verificado.</p>
-      <div class="acciones" style="margin-top: 0;">
-        <a class="boton" href="{% url 'agenda:directorio' %}">Agendar</a>
-        <a class="boton boton-secundario" href="{% url 'agenda:mis_citas' %}">Mis citas</a>
+
+    <section class="tarjeta panel-cifras">
+      <div>
+        <span class="cifra">{{ total_evaluaciones }}</span>
+        <span class="caption-4">{{ total_evaluaciones|pluralize:"evaluación,evaluaciones" }} en tu historial</span>
+      </div>
+      <div>
+        <span class="cifra">{{ avisos_sin_leer|default:"0" }}</span>
+        <span class="caption-4">{{ avisos_sin_leer|pluralize:"aviso,avisos" }} sin leer</span>
+      </div>
+      <div class="acciones">
+        <a class="boton boton-secundario boton-chico" href="{% url 'evaluaciones:historial' %}">Mi historial</a>
+        <a class="boton boton-secundario boton-chico" href="{% url 'notificaciones:lista' %}">Mis avisos</a>
       </div>
     </section>
   </div>
+
+  <p class="aviso" style="margin-top: 24px;">
+    Las evaluaciones son <strong>orientativas</strong> y no reemplazan el diagnóstico de un profesional.
+  </p>
+{% endblock %}
+
+{% block columna %}
+  <aside class="columna" aria-label="Mis datos para el profesional">
+    <div class="ficha">
+      <span class="retrato" aria-hidden="true">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</span>
+      <h2>{{ user.first_name|capfirst }} {{ user.last_name|capfirst }}</h2>
+      <p class="sub">{{ user.email }}</p>
+    </div>
+
+    <dl class="datos-rapidos">
+      <div>
+        <dt>Estatura</dt>
+        <dd>{% if ficha.estatura_cm %}{{ ficha.estatura_cm }} cm{% else %}—{% endif %}</dd>
+      </div>
+      <div>
+        <dt>Peso</dt>
+        <dd>{% if ficha.peso_kg %}{{ ficha.peso_kg|floatformat:"-1" }} kg{% else %}—{% endif %}</dd>
+      </div>
+    </dl>
+
+    <section class="bloque-columna">
+      <h3>Mis molestias</h3>
+      <div class="tarjeta">
+        {% if ficha.molestias %}
+          <p class="caption-2">{{ ficha.molestias|linebreaksbr }}</p>
+          {% if ficha.desde_cuando %}
+            <p class="caption-5" style="color: var(--texto-suave); margin-top: 8px;">
+              Desde {{ ficha.desde_cuando }}
+            </p>
+          {% endif %}
+          <p class="caption-5" style="color: var(--texto-suave); margin-top: 8px;">
+            Actualizado el {{ ficha.actualizada_en|date:"j \d\e F, H:i" }}
+          </p>
+        {% else %}
+          <p class="caption-2" style="color: var(--texto-suave);">
+            Todavía no has escrito nada. Cuéntale al profesional qué sientes:
+            una llaga que no cierra, una mancha, dolor al tragar.
+          </p>
+        {% endif %}
+      </div>
+    </section>
+
+    <a class="boton {% if not ficha.tiene_datos %}{% else %}boton-secundario {% endif %}boton-ancho"
+       href="{% url 'cuentas:mi_ficha' %}">
+      {% if ficha.tiene_datos %}Actualizar mis datos{% else %}Completar mis datos{% endif %}
+    </a>
+
+    <p class="caption-5" style="color: var(--texto-suave); text-align: center;">
+      Solo lo ve el profesional con quien tengas una cita vigente.
+    </p>
+  </aside>
 {% endblock %}

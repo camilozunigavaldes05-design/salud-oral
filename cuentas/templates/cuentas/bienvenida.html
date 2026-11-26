@@ -5,20 +5,39 @@
 {% block contenido %}
   <section class="tarjeta">
     <h1>Monitorea tu salud oral desde tu teléfono</h1>
-    <p>
-      Fotografía tu boca, obtén una orientación sobre tu nivel de riesgo (Bajo, Moderado o Alto)
-      y solicita una cita con un profesional de la salud oral.
+    <p class="body-3" style="color: var(--texto-suave); max-width: 680px;">
+      Fotografía la zona que te preocupa, recibe una orientación sobre tu nivel de riesgo
+      (bajo, moderado o alto) y solicita una hora con un profesional verificado.
     </p>
-    <p class="aviso">
+    <p class="aviso" style="margin-top: 24px;">
       La evaluación es <strong>orientativa</strong> y no reemplaza el diagnóstico de un profesional.
     </p>
     <div class="acciones">
-      <a class="boton" href="{% url 'cuentas:login' %}">Iniciar sesión</a>
-      <a class="boton boton-secundario" href="{% url 'cuentas:registro_paciente' %}">Crear cuenta</a>
+      <a class="boton" href="{% url 'cuentas:registro_paciente' %}">Crear cuenta</a>
+      <a class="boton boton-secundario" href="{% url 'cuentas:login' %}">Iniciar sesión</a>
     </div>
-    <p>
-      ¿Eres profesional de la salud oral?
-      <a href="{% url 'cuentas:registro_profesional' %}">Regístrate como profesional</a>.
-    </p>
+  </section>
+
+  <div class="rejilla">
+    <section class="tarjeta opcion">
+      <h2>1. Subes una foto</h2>
+      <p>Aceptas el consentimiento informado y envías una fotografía de la zona. El sistema revisa primero la calidad de la imagen.</p>
+    </section>
+    <section class="tarjeta opcion">
+      <h2>2. Recibes un nivel</h2>
+      <p>Un modelo de inteligencia artificial analiza la imagen y devuelve un nivel de riesgo con sus advertencias.</p>
+    </section>
+    <section class="tarjeta opcion">
+      <h2>3. Agendas si corresponde</h2>
+      <p>Si el riesgo es moderado o alto, reservas hora con un profesional cuyo registro fue validado por un administrador.</p>
+    </section>
+  </div>
+
+  <section class="tarjeta" style="margin-top: 24px;">
+    <h2>¿Eres profesional de la salud oral?</h2>
+    <p style="color: var(--texto-suave);">Publica tus horarios y recibe solicitudes de pacientes evaluados.</p>
+    <div class="acciones">
+      <a class="boton boton-secundario" href="{% url 'cuentas:registro_profesional' %}">Registrarme como profesional</a>
+    </div>
   </section>
 {% endblock %}

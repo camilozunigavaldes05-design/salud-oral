@@ -3,7 +3,7 @@ from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from .models import Profesional, Usuario
+from .models import FichaClinica, Profesional, Usuario
 
 
 class InicioSesionForm(forms.Form):
@@ -102,3 +102,28 @@ class RegistroProfesionalForm(RegistroPacienteForm):
             comuna=self.cleaned_data["comuna"],
         )
         return usuario
+
+
+class FichaClinicaForm(forms.ModelForm):
+    """Lo que el paciente declara para que el profesional lo tenga a la vista."""
+
+    class Meta:
+        model = FichaClinica
+        fields = ["estatura_cm", "peso_kg", "molestias", "desde_cuando"]
+        labels = {
+            "estatura_cm": "Estatura en centímetros",
+            "peso_kg": "Peso en kilos",
+            "molestias": "¿Qué molestia o síntoma tienes?",
+            "desde_cuando": "¿Desde cuándo?",
+        }
+        help_texts = {
+            "estatura_cm": "Opcional. Por ejemplo: 170",
+            "peso_kg": "Opcional. Por ejemplo: 68.5",
+            "molestias": "Cuéntalo con tus palabras: dolor, una llaga que no cierra, "
+                         "una mancha, dificultad para tragar.",
+            "desde_cuando": "Opcional. Por ejemplo: hace tres semanas",
+        }
+        widgets = {
+            "molestias": forms.Textarea(attrs={"rows": 5, "maxlength": 1000}),
+            "desde_cuando": forms.TextInput(attrs={"placeholder": "hace tres semanas"}),
+        }

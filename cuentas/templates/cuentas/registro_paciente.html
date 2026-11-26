@@ -1,16 +1,19 @@
-{% extends "base.html" %}
+{% extends "base_auth.html" %}
 
 {% block titulo %}Crear cuenta{% endblock %}
 
 {% block contenido %}
-  <section class="tarjeta tarjeta-estrecha">
-    <h1>Crear cuenta de paciente</h1>
-    <form method="post" novalidate>
-      {% csrf_token %}
-      {% include "cuentas/_formulario.html" %}
-      <button type="submit" class="boton boton-ancho">Crear cuenta</button>
-    </form>
-    <p>¿Ya tienes cuenta? <a href="{% url 'cuentas:login' %}">Inicia sesión</a>.</p>
-    <p>¿Eres profesional? <a href="{% url 'cuentas:registro_profesional' %}">Regístrate como profesional</a>.</p>
-  </section>
+  <h1>Crea tu cuenta</h1>
+  <p class="auth-intro">Necesitas una cuenta para guardar tus evaluaciones y agendar horas.</p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% include "cuentas/_formulario.html" %}
+    <button type="submit" class="boton boton-ancho">Crear cuenta</button>
+  </form>
+
+  <p class="auth-pie">
+    ¿Ya tienes cuenta? <a href="{% url 'cuentas:login' %}">Inicia sesión</a><br>
+    ¿Eres profesional? <a href="{% url 'cuentas:registro_profesional' %}">Regístrate como profesional</a>
+  </p>
 {% endblock %}

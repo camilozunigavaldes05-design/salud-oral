@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block titulo %}Mis datos{% endblock %}
+
+{% block contenido %}
+  <header class="panel-saludo">
+    <div>
+      <h1>Mis datos</h1>
+      <p class="fecha">Lo que escribas aquí lo verá el profesional que te atienda.</p>
+    </div>
+  </header>
+
+  <section class="tarjeta" style="max-width: 560px;">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% include "cuentas/_formulario.html" %}
+      <div class="acciones">
+        <button type="submit" class="boton">Guardar</button>
+        <a class="boton boton-secundario" href="{% url 'cuentas:inicio' %}">Cancelar</a>
+      </div>
+    </form>
+  </section>
+
+  <p class="aviso" style="max-width: 560px; margin-top: 24px;">
+    Todos los campos son opcionales. Estos datos <strong>solo</strong> quedan visibles
+    para un profesional con quien tengas una cita vigente, y nunca reemplazan lo que
+    converses con él durante la consulta.
+  </p>
+{% endblock %}

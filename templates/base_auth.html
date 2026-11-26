@@ -1,0 +1,78 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Acceder{% endblock %} · Salud Oral</title>
+  <meta name="description" content="{% block descripcion %}Accede a Salud Oral para evaluar una fotografía y agendar hora con un profesional verificado.{% endblock %}">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body>
+  <a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+  <div class="auth">
+    <section class="auth-panel" id="contenido">
+      <div class="auth-caja">
+        <a class="auth-marca" href="{% url 'cuentas:bienvenida' %}">
+          <span class="logo" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5.5c-1.6-1-2.9-1.5-4.3-1.5C5.1 4 3.5 5.8 3.5 8.6c0 2.1.6 3.4 1.1 5.1.45 1.5.6 3.2.75 4.8.12 1.3.5 2.9 1.6 2.9 1 0 1.3-1.3 1.55-2.8.22-1.3.4-2.5 1.2-2.5s.98 1.2 1.2 2.5c.25 1.5.55 2.8 1.55 2.8 1.1 0 1.48-1.6 1.6-2.9.15-1.6.3-3.3.75-4.8.5-1.7 1.1-3 1.1-5.1 0-2.8-1.6-4.6-4.2-4.6-1.4 0-2.7.5-4.3 1.5Z"/>
+            </svg>
+          </span>
+          Salud Oral
+        </a>
+
+        {% if messages %}
+          <ul class="mensajes" role="status">
+            {% for message in messages %}
+              <li class="mensaje mensaje-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% block contenido %}{% endblock %}
+      </div>
+    </section>
+
+    <aside class="auth-lado" aria-label="Sobre Salud Oral">
+      <div class="auth-lado-contenido">
+        {% block lado %}
+          <h2>Una orientación sobre esa lesión,<br>hoy mismo</h2>
+          <p>Subes una fotografía, el modelo la analiza y recibes un nivel de riesgo en minutos.</p>
+          <ul class="auth-lista">
+            <li>
+              <span class="marca-check" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+              </span>
+              Tres niveles claros: bajo, moderado y alto
+            </li>
+            <li>
+              <span class="marca-check" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+              </span>
+              Agenda con profesionales de registro validado
+            </li>
+            <li>
+              <span class="marca-check" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+              </span>
+              Tus fotografías quedan en almacenamiento privado
+            </li>
+          </ul>
+          <p class="auth-nota">
+            Salud Oral entrega una orientación y no constituye un diagnóstico médico.
+            Ante cualquier duda, consulta a un profesional de la salud oral.
+          </p>
+        {% endblock %}
+      </div>
+    </aside>
+  </div>
+
+  {% block guiones %}{% endblock %}
+</body>
+</html>

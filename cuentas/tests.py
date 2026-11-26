@@ -202,6 +202,6 @@ class InicioSesionTests(TestCase):
     def test_cerrar_sesion(self):
         self.ingresar()
         respuesta = self.client.post(reverse("cuentas:logout"))
-        self.assertRedirects(respuesta, reverse("cuentas:bienvenida"))
+        self.assertRedirects(respuesta, reverse("cuentas:login"))
         respuesta = self.client.get(reverse("cuentas:inicio"))
         self.assertEqual(respuesta.status_code, 302)

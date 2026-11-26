@@ -1,4 +1,7 @@
+from decimal import Decimal
+
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
@@ -56,6 +59,61 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email})"
+
+
+class FichaClinica(models.Model):
+    """Datos que el paciente declara y que el profesional necesita leer.
+
+    Es declaracion del propio paciente, no medicion clinica.
+    Todo es opcional: nadie queda bloqueado por no completarla.
+    """
+
+    paciente = models.OneToOneField(
+        Usuario,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="ficha",
+        limit_choices_to={"rol": "PACIENTE"},
+    )
+    estatura_cm = models.PositiveSmallIntegerField(
+        "estatura (cm)",
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(50), MaxValueValidator(250)],
+    )
+    peso_kg = models.DecimalField(
+        "peso (kg)",
+        max_digits=5,
+        decimal_places=1,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("2.0")), MaxValueValidator(Decimal("400.0"))],
+    )
+    molestias = models.TextField(
+        "molestias o síntomas",
+        blank=True,
+        default="",
+        max_length=1000,
+    )
+    desde_cuando = models.CharField(
+        "desde cuándo",
+        max_length=80,
+        blank=True,
+        default="",
+    )
+    actualizada_en = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "ficha_clinica"
+        verbose_name = "ficha clínica"
+        verbose_name_plural = "fichas clínicas"
+
+    def __str__(self):
+        return f"Ficha de {self.paciente}"
+
+    @property
+    def tiene_datos(self):
+        return any([self.estatura_cm, self.peso_kg, self.molestias.strip()])
 
 
 class Profesional(models.Model):
