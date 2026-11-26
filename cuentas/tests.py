@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import Profesional, Usuario
+from .models import FichaClinica, Profesional, Usuario
 
 CLAVE = "clave1234"
 
@@ -205,3 +205,120 @@ class InicioSesionTests(TestCase):
         self.assertRedirects(respuesta, reverse("cuentas:login"))
         respuesta = self.client.get(reverse("cuentas:inicio"))
         self.assertEqual(respuesta.status_code, 302)
+
+
+class FichaClinicaTests(TestCase):
+    """La ficha que el paciente declara y que el profesional lee."""
+
+    def setUp(self):
+        self.paciente = crear_paciente()
+        self.url = reverse("cuentas:mi_ficha")
+
+    def datos(self, **cambios):
+        datos = {
+            "estatura_cm": "172",
+            "peso_kg": "68.5",
+            "molestias": "Una llaga en la lengua que no cierra.",
+            "desde_cuando": "hace tres semanas",
+        }
+        datos.update(cambios)
+        return datos
+
+    def test_el_paciente_guarda_su_ficha(self):
+        self.client.force_login(self.paciente)
+        respuesta = self.client.post(self.url, self.datos())
+        self.assertRedirects(respuesta, reverse("cuentas:inicio"))
+        ficha = FichaClinica.objects.get(paciente=self.paciente)
+        self.assertEqual(ficha.estatura_cm, 172)
+        self.assertEqual(str(ficha.peso_kg), "68.5")
+        self.assertIn("llaga", ficha.molestias)
+
+    def test_todos_los_campos_son_opcionales(self):
+        self.client.force_login(self.paciente)
+        respuesta = self.client.post(
+            self.url,
+            {"estatura_cm": "", "peso_kg": "", "molestias": "", "desde_cuando": ""},
+        )
+        self.assertRedirects(respuesta, reverse("cuentas:inicio"))
+        ficha = FichaClinica.objects.get(paciente=self.paciente)
+        self.assertIsNone(ficha.estatura_cm)
+        self.assertFalse(ficha.tiene_datos)
+
+    def test_estatura_fuera_de_rango_se_rechaza_sin_corromper_lo_guardado(self):
+        self.client.force_login(self.paciente)
+        self.client.post(self.url, self.datos())
+        respuesta = self.client.post(self.url, self.datos(estatura_cm="900"))
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertEqual(FichaClinica.objects.get(paciente=self.paciente).estatura_cm, 172)
+
+    def test_un_profesional_no_entra_a_la_ficha(self):
+        profesional = crear_paciente("pro@test.cl", rol=Usuario.Rol.PROFESIONAL)
+        self.client.force_login(profesional)
+        respuesta = self.client.get(self.url)
+        self.assertRedirects(respuesta, reverse("cuentas:inicio"))
+
+    def test_visitante_debe_iniciar_sesion(self):
+        respuesta = self.client.get(self.url)
+        self.assertRedirects(respuesta, f"{reverse('cuentas:login')}?next={self.url}")
+
+
+class FichaVisibleParaElProfesionalTests(TestCase):
+    """La ficha sigue la misma regla de acceso que el historial de evaluaciones."""
+
+    def setUp(self):
+        from agenda.models import Cita, Horario
+
+        self.Cita = Cita
+        self.paciente = crear_paciente()
+        FichaClinica.objects.create(
+            paciente=self.paciente,
+            estatura_cm=172,
+            molestias="Una llaga en la lengua que no cierra.",
+        )
+        usuario = crear_paciente("pro@test.cl", rol=Usuario.Rol.PROFESIONAL)
+        self.profesional = Profesional.objects.create(
+            usuario=usuario,
+            registro="99",
+            especialidad="Odontología",
+            centro="Centro",
+            comuna="Viña del Mar",
+            verificado=True,
+        )
+        inicio = timezone.now() + timedelta(days=2)
+        horario = Horario.objects.create(
+            profesional=self.profesional,
+            inicio=inicio,
+            fin=inicio + timedelta(minutes=30),
+            estado=Horario.Estado.RESERVADO,
+        )
+        self.cita = Cita.objects.create(
+            paciente=self.paciente,
+            horario=horario,
+            estado=Cita.Estado.CONFIRMADA,
+        )
+        self.client.force_login(usuario)
+
+    def test_con_cita_vigente_el_profesional_ve_la_ficha(self):
+        respuesta = self.client.get(reverse("cuentas:inicio"))
+        self.assertContains(respuesta, "llaga")
+        self.assertContains(respuesta, "172 cm")
+
+    def test_sin_cita_vigente_el_profesional_no_ve_la_ficha(self):
+        self.cita.estado = self.Cita.Estado.CANCELADA
+        self.cita.save()
+        respuesta = self.client.get(reverse("cuentas:inicio"))
+        self.assertNotContains(respuesta, "llaga")
+
+    def test_otro_profesional_no_ve_la_ficha(self):
+        otro = crear_paciente("otro@test.cl", rol=Usuario.Rol.PROFESIONAL)
+        Profesional.objects.create(
+            usuario=otro,
+            registro="100",
+            especialidad="Odontología",
+            centro="Otro",
+            comuna="Valparaíso",
+            verificado=True,
+        )
+        self.client.force_login(otro)
+        respuesta = self.client.get(reverse("cuentas:inicio"))
+        self.assertNotContains(respuesta, "llaga")
