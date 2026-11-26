@@ -1,0 +1,15 @@
+{% load static %}{% comment %}Selector de tema. Sin JavaScript no aparece.{% endcomment %}
+<div class="tema" data-tema-selector role="group" aria-label="Tema de la interfaz" hidden>
+  <button type="button" data-valor="auto" aria-pressed="true" title="Seguir al sistema">
+    <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-circle-half"></use></svg>
+    <span class="visually-hidden">Automático</span>
+  </button>
+  <button type="button" data-valor="claro" aria-pressed="false" title="Tema claro">
+    <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-sun"></use></svg>
+    <span class="visually-hidden">Claro</span>
+  </button>
+  <button type="button" data-valor="oscuro" aria-pressed="false" title="Tema oscuro">
+    <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-moon"></use></svg>
+    <span class="visually-hidden">Oscuro</span>
+  </button>
+</div>

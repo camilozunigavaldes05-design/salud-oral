@@ -34,16 +34,25 @@
   --error-borde:   #fecaca;
   --error-texto:   #b42318;
 
+  /* Roles del tema claro. El oscuro los redefine mas abajo. */
+  --fondo-app:         #e9eef6;
   --superficie:        var(--blanco);
+  --superficie-alta:   var(--blanco);
   --superficie-base:   var(--gris-50);
   --borde:             var(--gris-200);
-  /* Borde de controles: 3,09:1 sobre blanco, exigido por WCAG 1.4.11. */
   --borde-campo:       #8594a9;
   --texto:             var(--gris-900);
   --texto-suave:       var(--gris-500);
   --accion:            var(--azul-600);
   --accion-hover:      var(--azul-700);
   --accion-suave:      var(--azul-50);
+  --barra-fondo:       var(--azul-900);
+  --barra-texto:       rgba(255, 255, 255, 0.72);
+  --barra-activo:        #ffffff;
+  --barra-activo-texto:  var(--azul-700);
+  --barra-activo-sombra: 0 1px 2px rgba(0, 0, 0, 0.18);
+  --sombra-panel:      0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+  --sombra-flotante:   0 12px 32px rgba(15, 23, 42, 0.12);
 
   --s-0:   0;
   --s-25:  2px;
@@ -77,6 +86,112 @@
   --ancho-columna: 320px;
 }
 
+
+/* (sustituido) Modo oscuro
+   Solo se redefinen los roles: el resto del sistema no cambia.
+   Contraste verificado: texto 14,67:1 · texto suave 7,01:1 · accion 7,81:1
+   · borde de campo 3,06:1 (WCAG 1.4.11).
+   Nada de negro puro ni blanco puro, que aplanan la profundidad.
+   ------------------------------------------------------------------------ */
+/* --- Modo oscuro ---------------------------------------------------------
+   Tres estados: automatico (sigue al sistema), claro y oscuro.
+   Contraste verificado: texto 14,67:1 · suave 7,01:1 · accion 7,81:1
+   · borde de campo 3,06:1 (WCAG 1.4.11). Sin negro ni blanco puros.
+   ------------------------------------------------------------------------ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    --fondo-app:        #0a0e17;
+    --superficie:       #151b27;
+    --superficie-alta:  #1c2433;
+    --superficie-base:  #10151f;
+    --borde:            #272f3e;
+    --borde-campo:      #5a687f;
+    --texto:            #e8edf5;
+    --texto-suave:      #9aa6ba;
+    --accion:           #7cb0ff;
+    --accion-hover:     #a3c7ff;
+    --accion-suave:     #1b2740;
+    --barra-fondo:      #121a2b;
+    --barra-texto:      rgba(232, 237, 245, 0.68);
+    --barra-activo:        rgba(124, 176, 255, 0.18);
+    --barra-activo-texto:  #bcd6ff;
+    --barra-activo-sombra: inset 0 0 0 1px rgba(124, 176, 255, 0.28);
+    --sombra-panel:     0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+    --sombra-flotante:  0 12px 32px rgba(0, 0, 0, 0.5);
+
+    --gris-50:   #10151f;
+    --gris-100:  #1c2433;
+    --gris-200:  #272f3e;
+    --gris-300:  #3a4456;
+    --gris-500:  #9aa6ba;
+    --gris-700:  #c3ccda;
+
+    --exito-fondo:  #0e2a20;  --exito-borde:  #1d5b45;  --exito-texto:  #6ee7b7;
+    --alerta-fondo: #2b2310;  --alerta-borde: #5e4c16;  --alerta-texto: #fcd34d;
+    --error-fondo:  #2d1517;  --error-borde:  #6b2b2f;  --error-texto:  #fca5a5;
+    --azul-50:  #1b2740;
+    --azul-100: #24365a;
+    --azul-200: #2f4878;
+  }
+}
+:root[data-tema="oscuro"] {
+    --fondo-app:        #0a0e17;
+    --superficie:       #151b27;
+    --superficie-alta:  #1c2433;
+    --superficie-base:  #10151f;
+    --borde:            #272f3e;
+    --borde-campo:      #5a687f;
+    --texto:            #e8edf5;
+    --texto-suave:      #9aa6ba;
+    --accion:           #7cb0ff;
+    --accion-hover:     #a3c7ff;
+    --accion-suave:     #1b2740;
+    --barra-fondo:      #121a2b;
+    --barra-texto:      rgba(232, 237, 245, 0.68);
+    --barra-activo:        rgba(124, 176, 255, 0.18);
+    --barra-activo-texto:  #bcd6ff;
+    --barra-activo-sombra: inset 0 0 0 1px rgba(124, 176, 255, 0.28);
+    --sombra-panel:     0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+    --sombra-flotante:  0 12px 32px rgba(0, 0, 0, 0.5);
+
+    --gris-50:   #10151f;
+    --gris-100:  #1c2433;
+    --gris-200:  #272f3e;
+    --gris-300:  #3a4456;
+    --gris-500:  #9aa6ba;
+    --gris-700:  #c3ccda;
+
+    --exito-fondo:  #0e2a20;  --exito-borde:  #1d5b45;  --exito-texto:  #6ee7b7;
+    --alerta-fondo: #2b2310;  --alerta-borde: #5e4c16;  --alerta-texto: #fcd34d;
+    --error-fondo:  #2d1517;  --error-borde:  #6b2b2f;  --error-texto:  #fca5a5;
+    --azul-50:  #1b2740;
+    --azul-100: #24365a;
+    --azul-200: #2f4878;
+}
+
+:root[data-tema="oscuro"] .marca .logo, :root[data-tema="oscuro"] .auth-marca .logo { background: var(--accion); color: #0a0e17; }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .marca .logo, :root:not([data-tema="claro"]) .auth-marca .logo { background: var(--accion); color: #0a0e17; } }
+:root[data-tema="oscuro"] .auth-lado h2 { background: linear-gradient(to right, #e8edf5, #8e9bb0); }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .auth-lado h2 { background: linear-gradient(to right, #e8edf5, #8e9bb0); } }
+:root[data-tema="oscuro"] .boton { color: #0a0e17; }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .boton { color: #0a0e17; } }
+:root[data-tema="oscuro"] .boton:hover { color: #0a0e17; }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .boton:hover { color: #0a0e17; } }
+:root[data-tema="oscuro"] .boton-secundario, :root[data-tema="oscuro"] .boton-claro { color: var(--accion); }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .boton-secundario, :root:not([data-tema="claro"]) .boton-claro { color: var(--accion); } }
+:root[data-tema="oscuro"] .boton-secundario:hover { color: var(--accion-hover); }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .boton-secundario:hover { color: var(--accion-hover); } }
+:root[data-tema="oscuro"] .boton-peligro { color: var(--error-texto); }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .boton-peligro { color: var(--error-texto); } }
+:root[data-tema="oscuro"] .boton-peligro:hover { color: var(--error-texto); }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .boton-peligro:hover { color: var(--error-texto); } }
+:root[data-tema="oscuro"] .contador { color: #0a0e17; }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .contador { color: #0a0e17; } }
+:root[data-tema="oscuro"] .auth-lista .marca-check { color: #0a0e17; }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .auth-lista .marca-check { color: #0a0e17; } }
+:root[data-tema="oscuro"] .vacio .icono-circulo { color: var(--accion); }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .vacio .icono-circulo { color: var(--accion); } }
+
 /* --- Reset -------------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -87,7 +202,7 @@ body {
   line-height: 1.5;
   font-weight: 400;
   color: var(--texto);
-  background: var(--superficie-base);
+  background: var(--fondo-app);
   -webkit-font-smoothing: antialiased;
   text-wrap: pretty;
 }
@@ -165,53 +280,75 @@ a:hover { color: var(--accion-hover); text-decoration: underline; }
 }
 main.contenedor { padding-top: var(--s-500); padding-bottom: var(--s-800); }
 
-/* Armazon: barra lateral + cuerpo + columna derecha opcional */
+/* Armazon: dos paneles flotantes sobre un fondo tenido, como la referencia.
+   La barra no llega a los bordes de la ventana: es un carril redondeado. */
 .app {
   display: grid;
   grid-template-columns: var(--ancho-barra) minmax(0, 1fr);
+  gap: var(--s-200);
+  padding: var(--s-200);
   min-height: 100vh;
   min-height: 100dvh;
 }
-.app-cuerpo { display: flex; flex-direction: column; min-width: 0; }
-/* El contenido y la columna comparten fila; el pie queda siempre al final. */
+.app-cuerpo {
+  display: flex; flex-direction: column; min-width: 0;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--r-3xl);
+  box-shadow: var(--sombra-panel);
+  overflow: clip;
+}
 .cuerpo-principal { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); }
 .cuerpo-principal:has(.columna) { grid-template-columns: minmax(0, 1fr) var(--ancho-columna); }
-.contenido { padding: var(--s-500) var(--s-500) var(--s-700); min-width: 0; }
+.contenido { padding: var(--s-500); min-width: 0; }
 
 /* --- Barra lateral ------------------------------------------------------ */
 .barra {
   display: flex; flex-direction: column;
-  background: var(--azul-900);
+  background: var(--barra-fondo);
   color: #fff;
   padding: var(--s-300) var(--s-200);
-  position: sticky; top: 0; height: 100vh; height: 100dvh;
+  border-radius: var(--r-3xl);
+  box-shadow: var(--sombra-flotante);
+  position: sticky;
+  top: var(--s-200);
+  height: calc(100dvh - var(--s-400));
+  /* Filo interior: le da volumen y evita el bloque plano. */
+  box-shadow: var(--sombra-flotante), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 .barra-marca {
   display: flex; align-items: center; gap: var(--s-100);
-  color: #fff; font-size: 1.125rem; font-weight: 600; text-decoration: none;
+  color: #fff; font-size: 1.0625rem; font-weight: 600; text-decoration: none;
+  letter-spacing: -0.01em;
   padding: var(--s-75) var(--s-100); margin-bottom: var(--s-500);
 }
 .barra-marca:hover { color: #fff; text-decoration: none; }
 .barra-marca .logo {
   display: grid; place-items: center; flex-shrink: 0;
-  width: 32px; height: 32px; border-radius: var(--r-lg);
-  background: rgba(255, 255, 255, 0.16); color: #fff;
+  width: 34px; height: 34px; border-radius: var(--r-xl);
+  background: rgba(255, 255, 255, 0.12); color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 .barra-menu { display: flex; flex-direction: column; gap: var(--s-25); }
 .barra-menu a, .barra-salir button {
   display: flex; align-items: center; gap: var(--s-100);
   padding: var(--s-75) var(--s-100);
-  border-radius: var(--r-lg);
-  color: rgba(255, 255, 255, 0.72);
+  border-radius: var(--r-xl);
+  color: var(--barra-texto);
   font-family: inherit; font-size: 0.875rem; line-height: 1.25rem; font-weight: 500;
   text-decoration: none; text-align: left;
   transition: background var(--dur-color) var(--curva), color var(--dur-color) var(--curva);
 }
 .barra-menu a:hover, .barra-salir button:hover {
-  background: rgba(255, 255, 255, 0.10); color: #fff; text-decoration: none;
+  background: rgba(255, 255, 255, 0.08); color: #fff; text-decoration: none;
 }
+/* El elemento activo es una pastilla clara con el icono en color de accion,
+   como en la referencia. Deja de parecer un boton seleccionado por defecto. */
 .barra-menu a[aria-current="page"] {
-  background: rgba(255, 255, 255, 0.16); color: #fff; font-weight: 600;
+  background: var(--barra-activo);
+  color: var(--barra-activo-texto);
+  font-weight: 600;
+  box-shadow: var(--barra-activo-sombra);
 }
 .barra :focus-visible { outline-color: #fff; }
 .barra-salir { margin-top: auto; padding-top: var(--s-300); }
@@ -225,7 +362,8 @@ main.contenedor { padding-top: var(--s-500); padding-bottom: var(--s-800); }
   background: var(--superficie);
   border-bottom: 1px solid var(--borde);
 }
-.encabezado .marca { margin-right: auto; }
+.encabezado .marca { margin-right: auto; white-space: nowrap; }
+.encabezado .sesion { flex-wrap: nowrap; }
 .solo-movil { display: none; }
 .encabezado .contenedor {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
@@ -475,25 +613,45 @@ ul.errorlist.nonfield {
 /* --- Panel de inicio por rol -------------------------------------------- */
 .panel-saludo {
   display: flex; flex-wrap: wrap; gap: var(--s-200);
-  align-items: flex-start; justify-content: space-between;
+  align-items: center; justify-content: space-between;
   margin-bottom: var(--s-400);
 }
 .panel-saludo h1 { margin-bottom: var(--s-50); }
 .panel-saludo .fecha { margin: 0; }
 
-.panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s-300); }
-.panel-destacado { display: flex; flex-direction: column; }
-.panel-destacado h2 { margin-bottom: var(--s-100); }
-.panel-destacado .acciones { margin-top: auto; padding-top: var(--s-200); }
+/* Todas las tarjetas de una fila miden lo mismo: la altura la fija la fila,
+   no el contenido de cada una. Era el defecto mas visible del panel. */
+.panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-auto-rows: 1fr;
+  gap: var(--s-300);
+}
+.panel > .tarjeta {
+  display: flex; flex-direction: column;
+  min-height: 190px;
+  padding: var(--s-300);
+}
+/* Anatomia comun: etiqueta arriba, cuerpo que se estira, acciones abajo. */
+.panel .etiqueta {
+  display: block;
+  font-size: 0.75rem; line-height: 1rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--texto-suave);
+  margin: 0 0 var(--s-100);
+}
+.panel .cuerpo { flex: 1; display: flex; flex-direction: column; gap: var(--s-50); }
+.panel .acciones { margin-top: var(--s-200); margin-bottom: 0; }
+.panel .vacio { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0; }
 
 .cifra {
   display: block;
-  font-size: 3rem; line-height: 1; font-weight: 600;
+  font-size: 2.25rem; line-height: 2.5rem; font-weight: 600;
   letter-spacing: -0.02em; color: var(--accion);
 }
-.panel-cifras { display: flex; flex-direction: column; gap: var(--s-200); }
-.panel-cifras .caption-4 { display: block; color: var(--texto-suave); margin-top: var(--s-50); }
-.panel-cifras .acciones { margin-top: auto; }
+.panel-cifras { gap: var(--s-200); }
+.panel-cifras .par { display: flex; align-items: baseline; gap: var(--s-100); }
+.panel-cifras .par .caption-4 { color: var(--texto-suave); }
 
 /* --- Control segmentado -------------------------------------------------- */
 .segmentado {
@@ -556,6 +714,27 @@ ul.errorlist.nonfield {
   .segmentado .indicador { transition: none; }
   .pila > [data-variante] { transform: none; }
 }
+
+
+/* --- Selector de tema ---------------------------------------------------- */
+.tema {
+  display: flex; gap: var(--s-25);
+  padding: var(--s-25);
+  background: var(--gris-100);
+  border-radius: var(--r-lg);
+}
+.tema[hidden] { display: none; }
+.tema button {
+  display: grid; place-items: center;
+  width: 30px; height: 30px;
+  border: 0; border-radius: var(--r-md);
+  background: none; color: var(--texto-suave);
+  cursor: pointer;
+  transition: background var(--dur-color) var(--curva), color var(--dur-color) var(--curva);
+}
+.tema button:hover { color: var(--texto); }
+.tema button[aria-pressed="true"] { background: var(--superficie); color: var(--accion); }
+.tema .icono { width: 16px; height: 16px; }
 
 /* --- Centro de notificaciones ------------------------------------------- */
 .centro-avisos { position: relative; }
@@ -683,19 +862,27 @@ ul.errorlist.nonfield {
 
 
 /* --- Espera del analisis ------------------------------------------------- */
-.analizando { text-align: center; padding: var(--s-400) 0; }
+.analizando {
+  text-align: center;
+  padding: var(--s-400) var(--s-300);
+  background: var(--accion-suave);
+  border: 1px solid var(--azul-200);
+  border-radius: var(--r-2xl);
+  margin-top: var(--s-300);
+}
 .analizando[hidden] { display: none; }
 .analizando p { margin: 0 0 var(--s-50); }
 .analizando .caption-2 { color: var(--texto-suave); margin-bottom: var(--s-300); }
 
 /* Barra indeterminada: no sabemos cuanto falta, solo que sigue trabajando.
-   La skill desaconseja los giradores circulares. */
+   La guia de diseno desaconseja los giradores circulares. */
 .barra-progreso {
-  height: 4px; border-radius: var(--r-full);
-  background: var(--gris-100); overflow: hidden;
+  height: 8px; border-radius: var(--r-full);
+  background: var(--superficie); overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--azul-200);
 }
 .barra-progreso span {
-  display: block; height: 100%; width: 40%;
+  display: block; height: 100%; width: 45%;
   border-radius: var(--r-full); background: var(--accion);
   animation: avanzar 1.6s var(--curva) infinite;
 }
@@ -800,7 +987,15 @@ ul.errorlist.nonfield {
   .app { grid-template-columns: minmax(0, 1fr); }
   .solo-movil { display: inline-flex; }
   .contenido { padding: var(--s-300) var(--s-200) var(--s-700); }
-  .encabezado { padding: var(--s-100) var(--s-200); }
+  /* Encabezado en una sola linea: marca, tema y campana. El rol se cae,
+     porque ya aparece en el saludo del panel. */
+  .encabezado { padding: var(--s-100) var(--s-200); gap: var(--s-75); }
+  .encabezado .quien { display: none; }
+  .encabezado .sesion { gap: var(--s-75); }
+  .campana-texto { display: none; }
+  /* Apiladas no necesitan igualarse: la altura minima solo sirve en fila. */
+  .panel > .tarjeta { min-height: 0; }
+  .tema button { width: 26px; height: 26px; }
 
   .barra {
     position: fixed; bottom: 0; left: 0; right: 0; top: auto;

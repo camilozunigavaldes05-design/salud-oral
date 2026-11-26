@@ -10,7 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+  <link rel="stylesheet" href="{% static 'css/estilo.css' %}?v={{ v_estaticos }}">
+  <script src="{% static 'js/tema.js' %}?v={{ v_estaticos }}"></script>
 </head>
 <body>
   <a class="salto-contenido" href="#contenido">Saltar al contenido</a>
@@ -98,6 +99,7 @@
           </a>
 
           <div class="sesion">
+            {% include "notificaciones/_tema.html" %}
             {% include "notificaciones/_centro.html" %}
             <span class="quien">{{ user.first_name|capfirst }} · {{ user.get_rol_display }}</span>
           </div>

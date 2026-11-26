@@ -27,45 +27,55 @@
   {% endif %}
 
   <div class="panel">
-    <section class="tarjeta panel-destacado">
-      <h2 class="title-4" style="color: var(--texto-suave);">Por confirmar</h2>
-      <span class="cifra">{{ por_confirmar }}</span>
-      <p class="body-6" style="color: var(--texto-suave);">
-        {{ por_confirmar|pluralize:"solicitud espera,solicitudes esperan" }} tu respuesta
-      </p>
-      {% if por_confirmar %}
-        <div class="acciones">
-          <a class="boton boton-chico" href="{% url 'agenda:citas_profesional' %}">Revisar solicitudes</a>
-        </div>
-      {% endif %}
+    <section class="tarjeta">
+      <span class="etiqueta">Por confirmar</span>
+      <div class="cuerpo">
+        <span class="cifra">{{ por_confirmar }}</span>
+        <p class="body-6" style="color: var(--texto-suave);">
+          {{ por_confirmar|pluralize:"solicitud espera,solicitudes esperan" }} tu respuesta
+        </p>
+      </div>
+      <div class="acciones">
+        <a class="boton {% if not por_confirmar %}boton-secundario {% endif %}boton-chico"
+           href="{% url 'agenda:citas_profesional' %}">Revisar solicitudes</a>
+      </div>
     </section>
 
-    <section class="tarjeta panel-destacado">
-      <h2 class="title-4" style="color: var(--texto-suave);">Próxima cita</h2>
+    <section class="tarjeta">
+      <span class="etiqueta">Próxima cita</span>
+      <div class="cuerpo">
       {% if proxima_cita %}
         <p class="body-1">{{ proxima_cita.horario.inicio|date:"j \d\e F, H:i" }}</p>
         <p class="body-6" style="color: var(--texto-suave);">
           {{ proxima_cita.paciente.first_name }} {{ proxima_cita.paciente.last_name }}
         </p>
         <p><span class="estado estado-{{ proxima_cita.estado }}">{{ proxima_cita.get_estado_display }}</span></p>
-        <div class="acciones">
-          <a class="boton boton-secundario boton-chico" href="{% url 'agenda:detalle_cita' proxima_cita.pk %}">Ver detalle</a>
-        </div>
       {% else %}
-        <div class="vacio" style="padding: 24px 0;">
+        <div class="vacio">
           <p class="body-6">No tienes citas próximas.</p>
         </div>
       {% endif %}
+      </div>
+      <div class="acciones">
+        {% if proxima_cita %}
+          <a class="boton boton-secundario boton-chico" href="{% url 'agenda:detalle_cita' proxima_cita.pk %}">Ver detalle</a>
+        {% else %}
+          <a class="boton boton-secundario boton-chico" href="{% url 'agenda:mis_horarios' %}">Publicar horarios</a>
+        {% endif %}
+      </div>
     </section>
 
     <section class="tarjeta panel-cifras">
-      <div>
-        <span class="cifra">{{ horas_libres }}</span>
-        <span class="caption-4">{{ horas_libres|pluralize:"hora disponible,horas disponibles" }} publicadas</span>
-      </div>
-      <div>
-        <span class="cifra">{{ citas_proximas }}</span>
-        <span class="caption-4">{{ citas_proximas|pluralize:"cita vigente,citas vigentes" }}</span>
+      <span class="etiqueta">Tu agenda</span>
+      <div class="cuerpo">
+        <div class="par">
+          <span class="cifra">{{ horas_libres }}</span>
+          <span class="caption-4">{{ horas_libres|pluralize:"hora disponible,horas disponibles" }}</span>
+        </div>
+        <div class="par">
+          <span class="cifra">{{ citas_proximas }}</span>
+          <span class="caption-4">{{ citas_proximas|pluralize:"cita vigente,citas vigentes" }}</span>
+        </div>
       </div>
       <div class="acciones">
         <a class="boton boton-secundario boton-chico" href="{% url 'agenda:mis_horarios' %}">Mis horarios</a>
@@ -97,11 +107,11 @@
         </div>
         <div>
           <dt>Estatura</dt>
-          <dd>{% if ficha_del_paciente.estatura_cm %}{{ ficha_del_paciente.estatura_cm }} cm{% else %}—{% endif %}</dd>
+          <dd>{% if ficha_del_paciente.estatura_cm %}{{ ficha_del_paciente.estatura_cm }} cm{% else %}&mdash;{% endif %}</dd>
         </div>
         <div>
           <dt>Peso</dt>
-          <dd>{% if ficha_del_paciente.peso_kg %}{{ ficha_del_paciente.peso_kg|floatformat:"-1" }} kg{% else %}—{% endif %}</dd>
+          <dd>{% if ficha_del_paciente.peso_kg %}{{ ficha_del_paciente.peso_kg|floatformat:"-1" }} kg{% else %}&mdash;{% endif %}</dd>
         </div>
       </dl>
 

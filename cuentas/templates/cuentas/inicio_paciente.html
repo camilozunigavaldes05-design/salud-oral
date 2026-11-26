@@ -16,55 +16,68 @@
   </header>
 
   <div class="panel">
-    <section class="tarjeta panel-destacado">
-      <h2 class="title-4" style="color: var(--texto-suave);">Última evaluación</h2>
-      {% if ultima_evaluacion %}
-        {% if ultima_evaluacion.riesgo %}
-          <p><span class="nivel nivel-{{ ultima_evaluacion.riesgo }}">Riesgo {{ ultima_evaluacion.get_riesgo_display|lower }}</span></p>
+    <section class="tarjeta">
+      <span class="etiqueta">Última evaluación</span>
+      <div class="cuerpo">
+        {% if ultima_evaluacion %}
+          {% if ultima_evaluacion.riesgo %}
+            <p><span class="nivel nivel-{{ ultima_evaluacion.riesgo }}">Riesgo {{ ultima_evaluacion.get_riesgo_display|lower }}</span></p>
+          {% else %}
+            <p><span class="estado estado-{{ ultima_evaluacion.estado }}">{{ ultima_evaluacion.get_estado_display }}</span></p>
+          {% endif %}
+          <p class="fecha">{{ ultima_evaluacion.fecha|date:"j \d\e F, H:i" }}</p>
         {% else %}
-          <p><span class="estado estado-{{ ultima_evaluacion.estado }}">{{ ultima_evaluacion.get_estado_display }}</span></p>
+          <div class="vacio">
+            <p class="body-6">Todavía no tienes evaluaciones.</p>
+          </div>
         {% endif %}
-        <p class="fecha">{{ ultima_evaluacion.fecha|date:"j \d\e F, H:i" }}</p>
-        <div class="acciones">
+      </div>
+      <div class="acciones">
+        {% if ultima_evaluacion %}
           <a class="boton boton-secundario boton-chico" href="{% url 'evaluaciones:detalle' ultima_evaluacion.pk %}">Ver reporte</a>
-        </div>
-      {% else %}
-        <div class="vacio" style="padding: 24px 0;">
-          <p class="body-6">Todavía no tienes evaluaciones.</p>
+        {% else %}
           <a class="boton boton-chico" href="{% url 'evaluaciones:nueva' %}">Hacer la primera</a>
-        </div>
-      {% endif %}
+        {% endif %}
+      </div>
     </section>
 
-    <section class="tarjeta panel-destacado">
-      <h2 class="title-4" style="color: var(--texto-suave);">Próxima cita</h2>
-      {% if proxima_cita %}
-        <p class="body-1">{{ proxima_cita.horario.inicio|date:"j \d\e F, H:i" }}</p>
-        <p class="body-6" style="color: var(--texto-suave);">
-          {{ proxima_cita.horario.profesional.usuario.first_name }}
-          {{ proxima_cita.horario.profesional.usuario.last_name }}<br>
-          {{ proxima_cita.horario.profesional.centro }}, {{ proxima_cita.horario.profesional.comuna }}
-        </p>
-        <p><span class="estado estado-{{ proxima_cita.estado }}">{{ proxima_cita.get_estado_display }}</span></p>
-        <div class="acciones">
+    <section class="tarjeta">
+      <span class="etiqueta">Próxima cita</span>
+      <div class="cuerpo">
+        {% if proxima_cita %}
+          <p class="body-1">{{ proxima_cita.horario.inicio|date:"j \d\e F, H:i" }}</p>
+          <p class="body-6" style="color: var(--texto-suave);">
+            {{ proxima_cita.horario.profesional.usuario.first_name|capfirst }}
+            {{ proxima_cita.horario.profesional.usuario.last_name|capfirst }}<br>
+            {{ proxima_cita.horario.profesional.centro|capfirst }}, {{ proxima_cita.horario.profesional.comuna|capfirst }}
+          </p>
+          <p><span class="estado estado-{{ proxima_cita.estado }}">{{ proxima_cita.get_estado_display }}</span></p>
+        {% else %}
+          <div class="vacio">
+            <p class="body-6">No tienes citas agendadas.</p>
+          </div>
+        {% endif %}
+      </div>
+      <div class="acciones">
+        {% if proxima_cita %}
           <a class="boton boton-secundario boton-chico" href="{% url 'agenda:resumen' proxima_cita.pk %}">Ver detalle</a>
-        </div>
-      {% else %}
-        <div class="vacio" style="padding: 24px 0;">
-          <p class="body-6">No tienes citas agendadas.</p>
+        {% else %}
           <a class="boton boton-chico" href="{% url 'agenda:directorio' %}">Agendar una hora</a>
-        </div>
-      {% endif %}
+        {% endif %}
+      </div>
     </section>
 
     <section class="tarjeta panel-cifras">
-      <div>
-        <span class="cifra">{{ total_evaluaciones }}</span>
-        <span class="caption-4">{{ total_evaluaciones|pluralize:"evaluación,evaluaciones" }} en tu historial</span>
-      </div>
-      <div>
-        <span class="cifra">{{ avisos_sin_leer|default:"0" }}</span>
-        <span class="caption-4">{{ avisos_sin_leer|pluralize:"aviso,avisos" }} sin leer</span>
+      <span class="etiqueta">Tu resumen</span>
+      <div class="cuerpo">
+        <div class="par">
+          <span class="cifra">{{ total_evaluaciones }}</span>
+          <span class="caption-4">{{ total_evaluaciones|pluralize:"evaluación,evaluaciones" }}</span>
+        </div>
+        <div class="par">
+          <span class="cifra">{{ avisos_sin_leer|default:"0" }}</span>
+          <span class="caption-4">{{ avisos_sin_leer|pluralize:"aviso,avisos" }} sin leer</span>
+        </div>
       </div>
       <div class="acciones">
         <a class="boton boton-secundario boton-chico" href="{% url 'evaluaciones:historial' %}">Mi historial</a>
@@ -89,11 +102,11 @@
     <dl class="datos-rapidos">
       <div>
         <dt>Estatura</dt>
-        <dd>{% if ficha.estatura_cm %}{{ ficha.estatura_cm }} cm{% else %}—{% endif %}</dd>
+        <dd>{% if ficha.estatura_cm %}{{ ficha.estatura_cm }} cm{% else %}&mdash;{% endif %}</dd>
       </div>
       <div>
         <dt>Peso</dt>
-        <dd>{% if ficha.peso_kg %}{{ ficha.peso_kg|floatformat:"-1" }} kg{% else %}—{% endif %}</dd>
+        <dd>{% if ficha.peso_kg %}{{ ficha.peso_kg|floatformat:"-1" }} kg{% else %}&mdash;{% endif %}</dd>
       </div>
     </dl>
 
@@ -119,7 +132,7 @@
       </div>
     </section>
 
-    <a class="boton {% if not ficha.tiene_datos %}{% else %}boton-secundario {% endif %}boton-ancho"
+    <a class="boton {% if ficha.tiene_datos %}boton-secundario {% endif %}boton-ancho"
        href="{% url 'cuentas:mi_ficha' %}">
       {% if ficha.tiene_datos %}Actualizar mis datos{% else %}Completar mis datos{% endif %}
     </a>
