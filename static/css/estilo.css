@@ -46,6 +46,9 @@
   --texto:             var(--gris-900);
   --texto-suave:       var(--gris-500);
   --accion:            var(--azul-600);
+  /* Texto sobre el color de accion. En claro es blanco; en oscuro,
+     como la accion se aclara, tiene que ser oscuro. */
+  --sobre-accion:      var(--blanco);
   --accion-hover:      var(--azul-700);
   --accion-suave:      var(--azul-50);
   --barra-fondo:       var(--azul-900);
@@ -113,6 +116,7 @@
     --texto:            #e8edf5;
     --texto-suave:      #9aa6ba;
     --accion:           #7cb0ff;
+    --sobre-accion:     #0a0e17;
     --accion-hover:     #a3c7ff;
     --accion-suave:     #1b2740;
     --barra-fondo:      #121a2b;
@@ -136,6 +140,10 @@
     --azul-50:  #1b2740;
     --azul-100: #24365a;
     --azul-200: #2f4878;
+    --azul-500: #7cb0ff;
+    --azul-600: #7cb0ff;
+    --azul-700: #9ec5ff;
+    --azul-900: #121a2b;
   }
 }
 :root[data-tema="oscuro"] {
@@ -150,6 +158,7 @@
     --texto:            #e8edf5;
     --texto-suave:      #9aa6ba;
     --accion:           #7cb0ff;
+    --sobre-accion:     #0a0e17;
     --accion-hover:     #a3c7ff;
     --accion-suave:     #1b2740;
     --barra-fondo:      #121a2b;
@@ -173,16 +182,16 @@
     --azul-50:  #1b2740;
     --azul-100: #24365a;
     --azul-200: #2f4878;
+    --azul-500: #7cb0ff;
+    --azul-600: #7cb0ff;
+    --azul-700: #9ec5ff;
+    --azul-900: #121a2b;
 }
 
 :root[data-tema="oscuro"] .marca .logo, :root[data-tema="oscuro"] .auth-marca .logo { background: var(--accion); color: #0a0e17; }
 @media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .marca .logo, :root:not([data-tema="claro"]) .auth-marca .logo { background: var(--accion); color: #0a0e17; } }
-:root[data-tema="oscuro"] .auth-lado h2 { background: linear-gradient(to right, #e8edf5, #8e9bb0); }
-@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .auth-lado h2 { background: linear-gradient(to right, #e8edf5, #8e9bb0); } }
-:root[data-tema="oscuro"] .boton { color: #0a0e17; }
-@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .boton { color: #0a0e17; } }
-:root[data-tema="oscuro"] .boton:hover { color: #0a0e17; }
-@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .boton:hover { color: #0a0e17; } }
+:root[data-tema="oscuro"] .auth-lado h2 { background-image: linear-gradient(to right, #e8edf5, #8e9bb0); }
+@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .auth-lado h2 { background-image: linear-gradient(to right, #e8edf5, #8e9bb0); } }
 :root[data-tema="oscuro"] .boton-secundario, :root[data-tema="oscuro"] .boton-claro { color: var(--accion); }
 @media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .boton-secundario, :root:not([data-tema="claro"]) .boton-claro { color: var(--accion); } }
 :root[data-tema="oscuro"] .boton-secundario:hover { color: var(--accion-hover); }
@@ -191,10 +200,6 @@
 @media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .boton-peligro { color: var(--error-texto); } }
 :root[data-tema="oscuro"] .boton-peligro:hover { color: var(--error-texto); }
 @media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .boton-peligro:hover { color: var(--error-texto); } }
-:root[data-tema="oscuro"] .contador { color: #0a0e17; }
-@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .contador { color: #0a0e17; } }
-:root[data-tema="oscuro"] .auth-lista .marca-check { color: #0a0e17; }
-@media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .auth-lista .marca-check { color: #0a0e17; } }
 :root[data-tema="oscuro"] .vacio .icono-circulo { color: var(--accion); }
 @media (prefers-color-scheme: dark) { :root:not([data-tema="claro"]) .vacio .icono-circulo { color: var(--accion); } }
 
@@ -272,7 +277,7 @@ a:hover { color: var(--accion-hover); text-decoration: underline; }
 }
 .salto-contenido:focus {
   position: fixed; top: var(--s-200); left: var(--s-200); z-index: 100;
-  background: var(--accion); color: var(--blanco);
+  background: var(--accion); color: var(--sobre-accion);
   padding: var(--s-75) var(--s-200); border-radius: var(--r-lg);
 }
 
@@ -383,7 +388,7 @@ main.contenedor { padding-top: var(--s-500); padding-bottom: var(--s-800); }
 .marca .logo, .auth-marca .logo {
   display: grid; place-items: center;
   width: 32px; height: 32px; border-radius: var(--r-lg);
-  background: var(--accion); color: var(--blanco); flex-shrink: 0;
+  background: var(--accion); color: var(--sobre-accion); flex-shrink: 0;
 }
 .sesion { display: flex; align-items: center; gap: var(--s-200); flex-wrap: wrap; }
 .sesion form { margin: 0; }
@@ -398,7 +403,7 @@ main.contenedor { padding-top: var(--s-500); padding-bottom: var(--s-800); }
 .enlace-avisos:hover { background: var(--accion-suave); color: var(--accion); text-decoration: none; }
 .contador {
   display: inline-block; min-width: 20px; padding: 0 var(--s-50);
-  border-radius: var(--r-full); background: var(--accion); color: var(--blanco);
+  border-radius: var(--r-full); background: var(--accion); color: var(--sobre-accion);
   font-size: 0.75rem; line-height: 1rem; font-weight: 600; text-align: center;
 }
 
@@ -436,7 +441,7 @@ main.contenedor { padding-top: var(--s-500); padding-bottom: var(--s-800); }
   border: 1px solid var(--accion);
   border-radius: var(--r-lg);
   background: var(--accion);
-  color: var(--blanco);
+  color: var(--sobre-accion);
   font-family: inherit; font-size: 1rem; line-height: 1.5rem; font-weight: 600;
   text-decoration: none; cursor: pointer;
   transition: background var(--dur-color) var(--curva),
@@ -444,7 +449,7 @@ main.contenedor { padding-top: var(--s-500); padding-bottom: var(--s-800); }
               color var(--dur-color) var(--curva),
               transform var(--dur-color) var(--curva);
 }
-.boton:hover { background: var(--accion-hover); border-color: var(--accion-hover); color: var(--blanco); text-decoration: none; }
+.boton:hover { background: var(--accion-hover); border-color: var(--accion-hover); color: var(--sobre-accion); text-decoration: none; }
 .boton:active { transform: scale(0.98); }
 
 .boton-secundario { background: var(--superficie); color: var(--accion); border-color: var(--borde); }
@@ -929,7 +934,12 @@ ul.errorlist.nonfield {
 .pie nav { display: flex; flex-wrap: wrap; gap: var(--s-200); }
 
 /* --- Autenticacion: pantalla partida ------------------------------------ */
-.auth { min-height: 100vh; min-height: 100dvh; display: grid; grid-template-columns: 1fr 1fr; }
+/* El formulario no necesita la mitad: el panel derecho carga el mensaje. */
+.auth {
+  min-height: 100vh; min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(400px, 36%) 1fr;
+}
 .auth-panel {
   display: flex; flex-direction: column; justify-content: center;
   padding: var(--s-600) var(--s-500); background: var(--superficie);
@@ -950,13 +960,13 @@ ul.errorlist.nonfield {
 .auth-lado h2 {
   font-size: 2.25rem; line-height: 2.5rem; font-weight: 600; letter-spacing: -0.01em;
   margin-bottom: var(--s-200);
-  background: linear-gradient(to right, #000000, #666666);
+  background-image: linear-gradient(to right, #000000, #666666);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .auth-lado p { color: var(--gris-700); font-size: 1rem; line-height: 1.5rem; }
 .auth-lista { list-style: none; padding: 0; margin: var(--s-400) 0 0; display: grid; gap: var(--s-200); }
 .auth-lista li { display: flex; gap: var(--s-100); align-items: flex-start; font-size: 0.875rem; line-height: 1.25rem; color: var(--gris-700); }
-.auth-lista .marca-check { display: grid; place-items: center; width: 20px; height: 20px; border-radius: var(--r-full); background: var(--accion); color: var(--blanco); flex-shrink: 0; }
+.auth-lista .marca-check { display: grid; place-items: center; width: 20px; height: 20px; border-radius: var(--r-full); background: var(--accion); color: var(--sobre-accion); flex-shrink: 0; }
 .auth-nota {
   margin-top: var(--s-500); padding: var(--s-200);
   background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--r-xl);
@@ -982,6 +992,13 @@ ul.errorlist.nonfield {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     align-items: start;
   }
+}
+
+/* Entre 900 y 1100 px la columna del formulario esta en su ancho minimo:
+   le devolvemos espacio recortando el relleno. */
+@media (max-width: 1100px) {
+  .auth-panel { padding: var(--s-500) var(--s-300); }
+  .auth-lado { padding: var(--s-500) var(--s-400); }
 }
 
 @media (max-width: 900px) {
