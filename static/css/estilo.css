@@ -35,6 +35,8 @@
   --error-texto:   #b42318;
 
   /* Roles del tema claro. El oscuro los redefine mas abajo. */
+  color-scheme: light;
+
   --fondo-app:         #e9eef6;
   --superficie:        var(--blanco);
   --superficie-alta:   var(--blanco);
@@ -100,6 +102,8 @@
    ------------------------------------------------------------------------ */
 @media (prefers-color-scheme: dark) {
   :root:not([data-tema="claro"]) {
+    color-scheme: dark;
+
     --fondo-app:        #0a0e17;
     --superficie:       #151b27;
     --superficie-alta:  #1c2433;
@@ -135,6 +139,8 @@
   }
 }
 :root[data-tema="oscuro"] {
+    color-scheme: dark;
+
     --fondo-app:        #0a0e17;
     --superficie:       #151b27;
     --superficie-alta:  #1c2433;
