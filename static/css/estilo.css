@@ -711,8 +711,18 @@ ul.errorlist.nonfield {
 }
 
 /* --- Responsive --------------------------------------------------------- */
-@media (max-width: 1180px) {
-  /* La columna derecha baja debajo del contenido antes de apretarlo. */
+/* Banda intermedia: en vez de tirar la columna abajo, la apretamos
+   junto con la barra lateral para que siga a la derecha. */
+@media (max-width: 1280px) {
+  :root { --ancho-barra: 200px; --ancho-columna: 272px; }
+  .contenido { padding: var(--s-400) var(--s-300) var(--s-600); }
+  .encabezado { padding: var(--s-200) var(--s-300); }
+  .pie { padding: var(--s-300); }
+  .columna { padding: var(--s-200); }
+}
+
+@media (max-width: 1000px) {
+  /* Bajo este ancho ya no cabe: la columna pasa a ocupar el ancho completo. */
   .cuerpo-principal:has(.columna) { grid-template-columns: minmax(0, 1fr); }
   .columna {
     border-left: 0; border-top: 1px solid var(--borde);
