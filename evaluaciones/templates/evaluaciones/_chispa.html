@@ -1,24 +1,33 @@
 {% comment %}
-Versión mínima del gráfico de evolución, para una vista rápida dentro de
-una tarjeta de resumen.
+Versión mínima del gráfico, para una vista rápida dentro de una tarjeta.
 
-Sin ejes, sin bandas y con un solo punto marcado (el último): una chispa
-acompaña a un dato, no lo reemplaza. El nivel exacto lo dice la insignia
-que va junto a ella, así que el dibujo nunca carga solo el significado.
+Lleva los niveles de inicio y fin a cada lado: sin ellos la línea sube o
+baja pero no se sabe entre qué valores, que es como leer un dibujo sin
+escala. Las bandas tenues de fondo dan la referencia vertical.
 
 Espera `evolucion` en el contexto.
 {% endcomment %}
-<div class="chispa" role="img"
-     aria-label="Evolución de las últimas {{ evolucion.total }} evaluaciones. El detalle está en Mi historial.">
-  <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-    <polyline class="chispa-linea" points="{{ evolucion.linea }}" fill="none"
-              vector-effect="non-scaling-stroke"
-              stroke-linecap="round" stroke-linejoin="round"></polyline>
-  </svg>
-  {% for punto in evolucion.puntos %}
-    {% if punto.ultimo %}
-      <span class="chispa-punto punto-{{ punto.riesgo }}"
-            style="left: {{ punto.x }}%; top: {{ punto.y }}%"></span>
-    {% endif %}
-  {% endfor %}
+<div class="chispa-fila">
+  <span class="chispa-extremo">{{ evolucion.desde }}</span>
+
+  <div class="chispa" role="img"
+       aria-label="Evolución de {{ evolucion.desde|lower }} a {{ evolucion.hasta|lower }} en {{ evolucion.total }} evaluaciones.">
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      {% for banda in evolucion.bandas %}
+        <rect class="banda banda-{{ banda.codigo }}"
+              x="0" y="{{ banda.y }}" width="100" height="{{ banda.alto }}"></rect>
+      {% endfor %}
+      <polyline class="chispa-linea" points="{{ evolucion.linea }}" fill="none"
+                vector-effect="non-scaling-stroke"
+                stroke-linecap="round" stroke-linejoin="round"></polyline>
+    </svg>
+    {% for punto in evolucion.puntos %}
+      {% if punto.ultimo %}
+        <span class="chispa-punto punto-{{ punto.riesgo }}"
+              style="left: {{ punto.x }}%; top: {{ punto.y }}%"></span>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <span class="chispa-extremo chispa-extremo-fin">{{ evolucion.hasta }}</span>
 </div>

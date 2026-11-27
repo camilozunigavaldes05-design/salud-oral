@@ -896,15 +896,31 @@ ul.errorlist.nonfield {
 
 
 /* Chispa: version minima del grafico para una tarjeta de resumen.
-   Sin ejes ni bandas y con un solo punto. Acompana a la insignia de nivel,
-   que es la que dice el dato exacto. */
-.chispa {
-  position: relative;
-  height: 38px;
-  margin: var(--s-100) 0 var(--s-50);
+   Los niveles de inicio y fin van a los lados; sin ellos la linea sube o
+   baja pero no se sabe entre que valores. Las bandas tenues dan la
+   referencia vertical. */
+.chispa-fila {
+  display: flex; align-items: center; gap: var(--s-75);
+  margin: var(--s-200) 0 var(--s-75);
 }
-.chispa svg { width: 100%; height: 100%; display: block; }
-.chispa-linea { stroke: var(--accion); stroke-width: 2; opacity: 0.85; }
+.chispa-extremo {
+  flex-shrink: 0;
+  font-size: 0.6875rem; line-height: 1rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.03em;
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
+.chispa { position: relative; flex: 1; height: 40px; min-width: 0; }
+.chispa svg {
+  width: 100%; height: 100%; display: block;
+  border-radius: var(--r-md); overflow: hidden;
+}
+/* A este tamano las bandas solo orientan: a la intensidad del grafico
+   grande taparian la linea. */
+.chispa .banda-BAJO     { opacity: 0.10; }
+.chispa .banda-MODERADO { opacity: 0.14; }
+.chispa .banda-ALTO     { opacity: 0.20; }
+.chispa-linea { stroke: var(--accion); stroke-width: 2.5; }
 .chispa-punto {
   position: absolute;
   width: 9px; height: 9px;

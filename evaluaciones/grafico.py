@@ -96,6 +96,10 @@ def evolucion(evaluaciones):
     return {
         "puntos": puntos,
         "bandas": bandas,
+        # Extremos de la escala recorrida: es el "delta" de una escala
+        # ordinal, y lo que permite leer la chispa sin ejes.
+        "desde": primero.get_riesgo_display(),
+        "hasta": ultimo.get_riesgo_display(),
         "linea": " ".join(f"{p['x']},{p['y']}" for p in puntos),
         "tendencia": tendencia,
         "total": total,
