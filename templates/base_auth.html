@@ -57,13 +57,12 @@
               <span class="paso-texto"><strong>Agenda una hora</strong> con un profesional de registro validado.</span>
             </li>
           </ol>
-          <p class="auth-nota">
-            Salud Oral entrega una orientación y no constituye un diagnóstico médico.
-            Ante cualquier duda, consulta a un profesional de la salud oral.
-          </p>
         {% endblock %}
       </div>
     </aside>
+
+    {# Cinta al borde inferior, cruzando las dos columnas. #}
+    {% include "_marquesina.html" with texto="Salud Oral entrega una orientación y no constituye un diagnóstico médico" %}
   </div>
 
   {% block guiones %}{% endblock %}

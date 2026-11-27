@@ -745,6 +745,8 @@ ul.errorlist.nonfield {
    al terminar, la segunda copia esta exactamente donde empezo la primera,
    asi que el bucle no salta.
    ------------------------------------------------------------------------ */
+.auth > .marquesina { border-top: 1px solid var(--borde); }
+
 .marquesina {
   --marquesina-duracion: 34s;
   --marquesina-desvanecido: 8%;
@@ -1015,7 +1017,10 @@ ul.errorlist.nonfield {
   min-height: 100vh; min-height: 100dvh;
   display: grid;
   grid-template-columns: minmax(400px, 36%) 1fr;
+  /* Segunda fila para la cinta, que cruza las dos columnas. */
+  grid-template-rows: 1fr auto;
 }
+.auth > .marquesina { grid-column: 1 / -1; }
 .auth-panel {
   display: flex; flex-direction: column; justify-content: center;
   padding: var(--s-600) var(--s-500); background: var(--superficie);
