@@ -171,10 +171,16 @@ class Profesional(models.Model):
 
     @property
     def enlace_mapa(self):
-        """Indicaciones hacia la consulta, en la app de mapas del paciente.
+        """Indicaciones hacia la consulta, o cadena vacia si no hay a donde.
 
-        Sin direccion sigue sirviendo: el nombre del centro y la comuna
-        suelen bastar para encontrarlo, solo con menos precision.
+        Exige la direccion a proposito. Sin ella probamos a buscar por el
+        nombre del centro y Maps devolvia un lugar equivocado con toda
+        confianza: con centro "salud" y comuna "valparaiso" aterrizaba en
+        la Clinica RedSalud de Av. Brasil 2350, a 41 minutos, que no es
+        donde atiende nadie de aqui. Mandar al paciente a la direccion
+        errada es peor que no darle el boton, porque no tiene como saberlo.
         """
-        destino = f"{self.ubicacion}, {PAIS}" if self.ubicacion else PAIS
+        if not self.tiene_direccion:
+            return ""
+        destino = f"{self.ubicacion}, {PAIS}"
         return f"{MAPAS}?{urlencode({'api': '1', 'destination': destino})}"

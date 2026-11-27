@@ -6,6 +6,9 @@ desde donde esté. No pedimos permiso de ubicación al navegador ni
 incrustamos un mapa: la ruta la resuelve Maps, así que no hace falta clave
 ni JavaScript y funciona igual en el teléfono que en el escritorio.
 
+Sin dirección publicada no hay botón, solo el aviso. `enlace_mapa` explica
+por qué: buscar por el nombre del centro devolvía un lugar equivocado.
+
 Espera `profesional` en el contexto.
 {% endcomment %}
 {% load static %}
@@ -26,14 +29,21 @@ Espera `profesional` en el contexto.
     {% endif %}
   </div>
 
-  <a class="boton boton-secundario boton-chico ubicacion-ruta"
-     href="{{ profesional.enlace_mapa }}" target="_blank" rel="noopener noreferrer">
-    <svg class="icono" aria-hidden="true">
-      <use href="{% static 'img/iconos.svg' %}#i-navigation-arrow"></use>
-    </svg>
-    Cómo llegar
-    <span class="visually-hidden">
-      a {{ profesional.ubicacion }}. Se abre Google Maps en otra pestaña.
-    </span>
-  </a>
+  {% if profesional.enlace_mapa %}
+    <a class="boton boton-secundario boton-chico ubicacion-ruta"
+       href="{{ profesional.enlace_mapa }}" target="_blank" rel="noopener noreferrer">
+      <svg class="icono" aria-hidden="true">
+        <use href="{% static 'img/iconos.svg' %}#i-navigation-arrow"></use>
+      </svg>
+      Cómo llegar
+      <span class="visually-hidden">
+        a {{ profesional.ubicacion }}. Se abre Google Maps en otra pestaña.
+      </span>
+    </a>
+  {% else %}
+    <p class="ubicacion-sin-ruta">
+      El profesional todavía no publicó la dirección exacta. Conviene
+      confirmarla con él antes de ir.
+    </p>
+  {% endif %}
 </div>

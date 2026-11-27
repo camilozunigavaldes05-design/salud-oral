@@ -360,12 +360,23 @@ class UbicacionDeLaConsultaTests(TestCase):
 
     def test_el_enlace_acota_la_busqueda_al_pais(self):
         """Hay comunas chilenas con el mismo nombre en otros países."""
-        self.assertTrue(self.crear().enlace_mapa.endswith("%2C+Chile"))
+        enlace = self.crear(direccion="Av. Libertad 1348").enlace_mapa
+        self.assertTrue(enlace.endswith("%2C+Chile"))
 
-    def test_sin_direccion_el_enlace_sigue_sirviendo(self):
-        """Menos preciso, pero el centro y la comuna suelen bastar."""
-        enlace = self.crear().enlace_mapa
-        self.assertIn("Cl%C3%ADnica+Vi%C3%B1a", enlace)
+    def test_sin_direccion_no_hay_enlace(self):
+        """Buscar por el nombre del centro mandaba al paciente a otra parte.
+
+        Con centro "salud" y comuna "valparaiso", Maps resolvía la Clínica
+        RedSalud de Av. Brasil 2350 y trazaba 41 minutos de ruta hasta un
+        lugar donde no atiende nadie. Sin forma de que el paciente lo note,
+        no mostrar el botón es la única opción honesta.
+        """
+        self.assertEqual(self.crear().enlace_mapa, "")
+        self.assertEqual(self.crear(centro="salud", comuna="valparaiso").enlace_mapa, "")
+
+    def test_una_direccion_en_blanco_no_cuenta_como_direccion(self):
+        self.assertEqual(self.crear(direccion="   ").enlace_mapa, "")
+        self.assertFalse(self.crear(direccion="   ").tiene_direccion)
 
 
 class MiConsultaTests(TestCase):
@@ -411,3 +422,54 @@ class MiConsultaTests(TestCase):
         self.client.force_login(crear_paciente("otra@test.cl"))
         respuesta = self.client.get(self.url)
         self.assertRedirects(respuesta, reverse("cuentas:inicio"))
+
+
+class ComoLlegarEnLasPaginasTests(TestCase):
+    """El botón aparece donde el paciente lo necesita, y solo si sirve."""
+
+    def setUp(self):
+        from agenda.models import Cita, Horario
+
+        self.paciente = crear_paciente()
+        pro = crear_paciente("pro@test.cl", rol=Usuario.Rol.PROFESIONAL)
+        self.profesional = Profesional.objects.create(
+            usuario=pro,
+            registro="777",
+            especialidad="Odontología",
+            centro="Clínica Viña",
+            comuna="Viña del Mar",
+            verificado=True,
+        )
+        inicio = timezone.now() + timedelta(days=3)
+        horario = Horario.objects.create(
+            profesional=self.profesional,
+            inicio=inicio,
+            fin=inicio + timedelta(minutes=30),
+            estado=Horario.Estado.RESERVADO,
+        )
+        Cita.objects.create(
+            paciente=self.paciente,
+            horario=horario,
+            estado=Cita.Estado.CONFIRMADA,
+        )
+        self.client.force_login(self.paciente)
+
+    def test_con_direccion_el_panel_ofrece_la_ruta(self):
+        self.profesional.direccion = "Av. Libertad 1348"
+        self.profesional.save()
+        respuesta = self.client.get(reverse("cuentas:inicio"))
+        self.assertContains(respuesta, "Cómo llegar")
+        self.assertContains(respuesta, "Av. Libertad 1348")
+        self.assertContains(respuesta, "google.com/maps/dir/")
+
+    def test_sin_direccion_el_panel_avisa_en_vez_de_mandar_a_ciegas(self):
+        respuesta = self.client.get(reverse("cuentas:inicio"))
+        self.assertNotContains(respuesta, "google.com/maps/dir/")
+        self.assertContains(respuesta, "todavía no publicó la dirección")
+
+    def test_el_enlace_se_abre_aparte_y_sin_filtrar_la_sesion(self):
+        """rel=noopener evita que la pestaña de Maps toque la nuestra."""
+        self.profesional.direccion = "Av. Libertad 1348"
+        self.profesional.save()
+        respuesta = self.client.get(reverse("cuentas:inicio"))
+        self.assertContains(respuesta, 'rel="noopener noreferrer"')

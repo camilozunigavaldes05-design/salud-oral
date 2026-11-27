@@ -632,6 +632,11 @@ ul.errorlist.nonfield {
 .ubicacion-sena   { font-size: 0.875rem;  line-height: 1.25rem;  color: var(--texto-suave); }
 /* Gana por especificidad al `margin: 0` de arriba, sin recurrir a !important. */
 .ubicacion-donde .ubicacion-sena { margin-top: var(--s-25); }
+.ubicacion-sin-ruta {
+  grid-column: 2;
+  font-size: 0.8125rem; line-height: 1.125rem; color: var(--texto-suave);
+  margin: var(--s-50) 0 0; max-width: 42ch;
+}
 /* El boton ocupa la segunda columna, alineado con el texto y no con el pin. */
 .ubicacion-ruta { grid-column: 2; justify-self: start; margin-top: var(--s-75); }
 
