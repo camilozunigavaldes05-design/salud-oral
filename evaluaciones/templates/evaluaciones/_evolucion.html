@@ -1,0 +1,90 @@
+{% comment %}
+Evolución del nivel de riesgo.
+
+Una sola serie, así que no lleva caja de leyenda: el título la nombra.
+El nivel es una escala ordinal de tres posiciones, no un porcentaje, y cada
+banda lleva su nombre escrito: el color nunca es la única pista.
+
+El SVG solo dibuja las bandas y la línea, estirándose al ancho disponible.
+Las etiquetas y los puntos son HTML colocado por CSS, para que el texto
+conserve su tamaño y los puntos sigan siendo círculos a cualquier ancho.
+
+La tabla da los valores exactos y es la que sirve a los lectores de
+pantalla, que no pueden interpretar el dibujo.
+{% endcomment %}
+<section class="tarjeta evolucion">
+  <header class="evolucion-cabecera">
+    <div>
+      <h2 class="heading-6">Cómo ha cambiado tu riesgo</h2>
+      <p class="caption-2" style="color: var(--texto-suave);">
+        {{ evolucion.total }} evaluaciones con resultado, de la más antigua a la más reciente.
+      </p>
+    </div>
+    {% if evolucion.tendencia == "subio" %}
+      <span class="estado estado-PENDIENTE_CONFIRMACION">Subió desde la primera</span>
+    {% elif evolucion.tendencia == "bajo" %}
+      <span class="estado estado-CONFIRMADA">Bajó desde la primera</span>
+    {% else %}
+      <span class="estado">Sin cambios</span>
+    {% endif %}
+  </header>
+
+  <div class="grafico" role="img"
+       aria-label="Evolución del nivel de riesgo a lo largo de {{ evolucion.total }} evaluaciones. El detalle está en la tabla siguiente.">
+    <div class="grafico-niveles" aria-hidden="true">
+      {% for banda in evolucion.bandas %}
+        <span>{{ banda.nombre }}</span>
+      {% endfor %}
+    </div>
+
+    <div class="grafico-area">
+      <svg class="grafico-lienzo" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        {% for banda in evolucion.bandas %}
+          <rect class="banda banda-{{ banda.codigo }}"
+                x="0" y="{{ banda.y }}" width="100" height="{{ banda.alto }}"></rect>
+        {% endfor %}
+        {# non-scaling-stroke mantiene el grosor pese al estirado horizontal. #}
+        <polyline class="grafico-linea" points="{{ evolucion.linea }}" fill="none"
+                  vector-effect="non-scaling-stroke"
+                  stroke-linecap="round" stroke-linejoin="round"></polyline>
+      </svg>
+
+      {% for punto in evolucion.puntos %}
+        <span class="grafico-punto punto-{{ punto.riesgo }}{% if punto.ultimo %} punto-ultimo{% endif %}"
+              style="left: {{ punto.x }}%; top: {{ punto.y }}%"
+              title="{{ punto.fecha|date:'j \d\e F, H:i' }}: riesgo {{ punto.etiqueta|lower }}"></span>
+      {% endfor %}
+    </div>
+
+    <div class="grafico-fechas" aria-hidden="true">
+      {% for punto in evolucion.puntos %}
+        <span style="left: {{ punto.x }}%">{{ punto.fecha|date:"j M" }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <details class="evolucion-tabla">
+    <summary>Ver los valores</summary>
+    <div class="tabla-contenedor" style="margin-top: 12px;">
+      <table class="tabla">
+        <caption class="visually-hidden">Nivel de riesgo por evaluación</caption>
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Nivel</th>
+            <th scope="col"><span class="visually-hidden">Reporte</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for punto in evolucion.puntos %}
+            <tr>
+              <td>{{ punto.fecha|date:"j \d\e F \d\e Y, H:i" }}</td>
+              <td><span class="nivel nivel-{{ punto.riesgo }}">Riesgo {{ punto.etiqueta|lower }}</span></td>
+              <td><a href="{% url 'evaluaciones:detalle' punto.evaluacion.pk %}">Ver reporte</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </details>
+</section>

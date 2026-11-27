@@ -13,6 +13,7 @@ from cuentas.permisos import requiere_rol
 from .advertencias import AVISO_ORIENTATIVO, advertencias_para
 from .almacenamiento import leer_imagen
 from .forms import NuevaEvaluacionForm
+from .grafico import evolucion
 from .models import Evaluacion
 from .permisos import solo_pacientes
 from .servicios import ImagenNoProcesable, analizar, crear_evaluacion, puede_reintentarse
@@ -85,7 +86,11 @@ def historial(request):
         paciente=request.user,
         estado__in=ESTADOS_EN_HISTORIAL,
     )
-    return render(request, "evaluaciones/historial.html", {"evaluaciones": evaluaciones})
+    return render(
+        request,
+        "evaluaciones/historial.html",
+        {"evaluaciones": evaluaciones, "evolucion": evolucion(evaluaciones)},
+    )
 
 
 @solo_pacientes

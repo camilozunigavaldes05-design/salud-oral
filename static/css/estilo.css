@@ -805,6 +805,95 @@ ul.errorlist.nonfield {
   .marquesina-item { white-space: normal; text-align: center; }
 }
 
+
+/* --- Grafico de evolucion -----------------------------------------------
+   Una sola serie: un color de linea, sin caja de leyenda. Las bandas llevan
+   su nombre escrito, asi que el color nunca es la unica pista.
+
+   El SVG se estira al ancho disponible y solo dibuja bandas y linea. Las
+   etiquetas y los puntos son HTML: asi el texto conserva su tamano y los
+   puntos siguen siendo circulos a cualquier ancho.
+   ------------------------------------------------------------------------ */
+.evolucion-cabecera {
+  display: flex; flex-wrap: wrap; gap: var(--s-100);
+  align-items: baseline; justify-content: space-between;
+  margin-bottom: var(--s-300);
+}
+.evolucion-cabecera h2 { margin: 0 0 var(--s-25); }
+
+.grafico {
+  --grafico-alto: 180px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "niveles area" ".       fechas";
+  gap: 0 var(--s-100);
+}
+
+.grafico-niveles {
+  grid-area: niveles;
+  height: var(--grafico-alto);
+  display: flex; flex-direction: column;
+  text-align: right;
+}
+.grafico-niveles span {
+  flex: 1; display: flex; align-items: center; justify-content: flex-end;
+  font-size: 0.875rem; line-height: 1.25rem; font-weight: 500;
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
+
+.grafico-area { grid-area: area; position: relative; height: var(--grafico-alto); }
+.grafico-lienzo {
+  width: 100%; height: 100%; display: block;
+  border-radius: var(--r-lg); overflow: hidden;
+}
+
+/* Bandas: tenues, porque son referencia y no el dato. La intensidad crece
+   con la gravedad, lo que separa mejor moderado de alto (de ΔE 6 a 12) y de
+   paso refuerza el orden de la escala. */
+.banda-BAJO     { fill: var(--exito-texto);  opacity: 0.12; }
+.banda-MODERADO { fill: var(--alerta-texto); opacity: 0.20; }
+.banda-ALTO     { fill: var(--error-texto);  opacity: 0.30; }
+
+.grafico-linea { stroke: var(--accion); stroke-width: 2; }
+
+/* Cada punto lleva el color de su nivel, con un anillo del color de la
+   superficie para que no se funda con la banda de fondo. */
+.grafico-punto {
+  position: absolute;
+  width: 11px; height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+  border-radius: var(--r-full);
+  box-shadow: 0 0 0 2px var(--superficie);
+}
+.punto-BAJO     { background: var(--exito-texto); }
+.punto-MODERADO { background: var(--alerta-texto); }
+.punto-ALTO     { background: var(--error-texto); }
+.punto-ultimo   { width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px; }
+
+.grafico-fechas {
+  grid-area: fechas; position: relative; height: 24px; margin-top: var(--s-50);
+}
+.grafico-fechas span {
+  position: absolute; transform: translateX(-50%);
+  font-size: 0.75rem; line-height: 1rem; font-weight: 500;
+  color: var(--texto-suave); white-space: nowrap;
+}
+
+.evolucion-tabla { margin-top: var(--s-300); }
+.evolucion-tabla summary {
+  cursor: pointer; color: var(--accion);
+  font-size: 0.875rem; line-height: 1.25rem; font-weight: 600;
+}
+.evolucion-tabla summary:hover { color: var(--accion-hover); }
+
+/* En pantallas estrechas las fechas no caben todas sin chocar. */
+@media (max-width: 640px) {
+  .grafico { --grafico-alto: 150px; }
+  .grafico-niveles span { font-size: 0.75rem; }
+  .grafico-fechas span:not(:first-child):not(:last-child) { display: none; }
+}
+
 /* --- Selector de tema ---------------------------------------------------- */
 .tema {
   display: flex; gap: var(--s-25);

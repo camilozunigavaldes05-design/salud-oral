@@ -15,6 +15,10 @@
     </a>
   </header>
 
+  {% if evolucion %}
+    {% include "evaluaciones/_evolucion.html" %}
+  {% endif %}
+
   {% if evaluaciones %}
     <ol class="linea-tiempo">
       {% for evaluacion in evaluaciones %}
