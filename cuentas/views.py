@@ -112,6 +112,7 @@ def _datos_del_panel(usuario):
     """
     from agenda.models import Cita, Horario
     from agenda.servicios import ESTADOS_VIGENTES, puede_ver_historial
+    from evaluaciones.grafico import evolucion
     from evaluaciones.models import Evaluacion
 
     ahora = timezone.now()
@@ -128,6 +129,9 @@ def _datos_del_panel(usuario):
             "hoy": timezone.localdate(),
             "ultima_evaluacion": evaluaciones.first(),
             "total_evaluaciones": evaluaciones.count(),
+            # Chispa de la tarjeta de resumen: misma fuente que el grafico
+            # grande del historial, para que no puedan contradecirse.
+            "evolucion": evolucion(list(evaluaciones.filter(riesgo__isnull=False))),
             "proxima_cita": proxima,
             "profesional_de_turno": proxima.horario.profesional if proxima else None,
             # Columna derecha: lo que el paciente declara para su profesional.

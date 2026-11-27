@@ -894,6 +894,25 @@ ul.errorlist.nonfield {
   .grafico-fechas span:not(:first-child):not(:last-child) { display: none; }
 }
 
+
+/* Chispa: version minima del grafico para una tarjeta de resumen.
+   Sin ejes ni bandas y con un solo punto. Acompana a la insignia de nivel,
+   que es la que dice el dato exacto. */
+.chispa {
+  position: relative;
+  height: 38px;
+  margin: var(--s-100) 0 var(--s-50);
+}
+.chispa svg { width: 100%; height: 100%; display: block; }
+.chispa-linea { stroke: var(--accion); stroke-width: 2; opacity: 0.85; }
+.chispa-punto {
+  position: absolute;
+  width: 9px; height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: var(--r-full);
+  box-shadow: 0 0 0 2px var(--superficie);
+}
+
 /* --- Selector de tema ---------------------------------------------------- */
 .tema {
   display: flex; gap: var(--s-25);

@@ -26,6 +26,13 @@
             <p><span class="estado estado-{{ ultima_evaluacion.estado }}">{{ ultima_evaluacion.get_estado_display }}</span></p>
           {% endif %}
           <p class="fecha">{{ ultima_evaluacion.fecha|date:"j \d\e F, H:i" }}</p>
+          {% if evolucion %}
+            {% include "evaluaciones/_chispa.html" %}
+            <p class="caption-5" style="color: var(--texto-suave);">
+              {% if evolucion.tendencia == "subio" %}Subió{% elif evolucion.tendencia == "bajo" %}Bajó{% else %}Sin cambios{% endif %}
+              en {{ evolucion.total }} evaluaciones
+            </p>
+          {% endif %}
         {% else %}
           <div class="vacio">
             <p class="body-6">Todavía no tienes evaluaciones.</p>
@@ -35,6 +42,9 @@
       <div class="acciones">
         {% if ultima_evaluacion %}
           <a class="boton boton-secundario boton-chico" href="{% url 'evaluaciones:detalle' ultima_evaluacion.pk %}">Ver reporte</a>
+          {% if evolucion %}
+            <a class="boton boton-secundario boton-chico" href="{% url 'evaluaciones:historial' %}">Ver evolución</a>
+          {% endif %}
         {% else %}
           <a class="boton boton-chico" href="{% url 'evaluaciones:nueva' %}">Hacer la primera</a>
         {% endif %}
