@@ -36,27 +36,21 @@
   <div class="pila">
     <div data-variante="paciente"{% if tipo == "paciente" %} class="activa"{% endif %}>
       <h2>Una orientación sobre esa lesión,<br>hoy mismo</h2>
-      <p>Subes una fotografía, el modelo la analiza y recibes un nivel de riesgo en minutos.</p>
-      <ul class="auth-lista">
+      <p>Tres pasos, desde tu teléfono.</p>
+      <ol class="pasos">
         <li>
-          <span class="marca-check" aria-hidden="true">
-            <svg class="icono-check" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-check"></use></svg>
-          </span>
-          Tres niveles claros: bajo, moderado y alto
+          <span class="paso-numero" aria-hidden="true">1</span>
+          <span class="paso-texto"><strong>Fotografía la zona</strong> que te preocupa, con buena luz.</span>
         </li>
         <li>
-          <span class="marca-check" aria-hidden="true">
-            <svg class="icono-check" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-check"></use></svg>
-          </span>
-          Agenda con profesionales de registro validado
+          <span class="paso-numero" aria-hidden="true">2</span>
+          <span class="paso-texto"><strong>Recibe una orientación</strong> en minutos, con sus advertencias.</span>
         </li>
         <li>
-          <span class="marca-check" aria-hidden="true">
-            <svg class="icono-check" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-check"></use></svg>
-          </span>
-          Tus fotografías quedan en almacenamiento privado
+          <span class="paso-numero" aria-hidden="true">3</span>
+          <span class="paso-texto"><strong>Agenda una hora</strong> con un profesional de registro validado.</span>
         </li>
-      </ul>
+      </ol>
       <p class="auth-nota">
         Salud Oral entrega una orientación y no constituye un diagnóstico médico.
         Ante cualquier duda, consulta a un profesional de la salud oral.

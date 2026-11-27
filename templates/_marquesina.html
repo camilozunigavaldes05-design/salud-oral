@@ -1,0 +1,32 @@
+{% comment %}
+Banda de texto en desplazamiento continuo.
+
+Equivale al componente de React que circula como "marquee" (desplazamiento
+infinito, desvanecido en los bordes, pausa al pasar el mouse), reescrito en
+CSS porque este proyecto es Django y no tiene React ni Tailwind.
+
+La segunda copia existe solo para que el bucle no tenga salto, por eso va
+con aria-hidden: un lector de pantalla leería el aviso dos veces.
+
+Uso:  {% include "_marquesina.html" with texto="..." %}
+{% endcomment %}
+<div class="marquesina" role="note" aria-label="Aviso permanente">
+  <div class="marquesina-pista">
+    <div class="marquesina-grupo">
+      <span class="marquesina-item">{{ texto }}</span>
+      <span class="marquesina-punto" aria-hidden="true"></span>
+      <span class="marquesina-item">{{ texto }}</span>
+      <span class="marquesina-punto" aria-hidden="true"></span>
+      <span class="marquesina-item">{{ texto }}</span>
+      <span class="marquesina-punto" aria-hidden="true"></span>
+    </div>
+    <div class="marquesina-grupo" aria-hidden="true">
+      <span class="marquesina-item">{{ texto }}</span>
+      <span class="marquesina-punto"></span>
+      <span class="marquesina-item">{{ texto }}</span>
+      <span class="marquesina-punto"></span>
+      <span class="marquesina-item">{{ texto }}</span>
+      <span class="marquesina-punto"></span>
+    </div>
+  </div>
+</div>

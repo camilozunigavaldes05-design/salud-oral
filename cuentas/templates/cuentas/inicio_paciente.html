@@ -86,9 +86,10 @@
     </section>
   </div>
 
-  <p class="aviso" style="margin-top: 24px;">
-    Las evaluaciones son <strong>orientativas</strong> y no reemplazan el diagnóstico de un profesional.
-  </p>
+{% endblock %}
+
+{% block cinta %}
+  {% include "_marquesina.html" with texto="Las evaluaciones son orientativas y no reemplazan el diagnóstico de un profesional" %}
 {% endblock %}
 
 {% block columna %}

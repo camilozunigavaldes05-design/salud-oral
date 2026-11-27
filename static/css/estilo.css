@@ -727,6 +727,82 @@ ul.errorlist.nonfield {
 }
 
 
+
+/* --- Pasos del panel de acceso ------------------------------------------ */
+.pasos { list-style: none; padding: 0; margin: var(--s-400) 0 0; display: grid; gap: var(--s-200); counter-reset: paso; }
+.pasos li { display: flex; gap: var(--s-100); align-items: flex-start; }
+.paso-numero {
+  display: grid; place-items: center; flex-shrink: 0;
+  width: 24px; height: 24px; border-radius: var(--r-full);
+  background: var(--accion); color: var(--sobre-accion);
+  font-size: 0.75rem; line-height: 1; font-weight: 600;
+}
+.paso-texto { font-size: 0.875rem; line-height: 1.25rem; color: var(--gris-700); }
+
+/* --- Marquesina ----------------------------------------------------------
+   Desplazamiento continuo con desvanecido en los bordes y pausa al pasar
+   el mouse. La pista lleva el contenido dos veces y se mueve un -50%:
+   al terminar, la segunda copia esta exactamente donde empezo la primera,
+   asi que el bucle no salta.
+   ------------------------------------------------------------------------ */
+.marquesina {
+  --marquesina-duracion: 34s;
+  --marquesina-desvanecido: 8%;
+  overflow: hidden;
+  padding: var(--s-100) 0;
+  background: var(--alerta-fondo);
+  border-top: 1px solid var(--alerta-borde);
+  color: var(--alerta-texto);
+  /* El desvanecido evita el corte seco contra el borde del panel. */
+  mask-image: linear-gradient(to right,
+    transparent 0,
+    #000 var(--marquesina-desvanecido),
+    #000 calc(100% - var(--marquesina-desvanecido)),
+    transparent 100%);
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0,
+    #000 var(--marquesina-desvanecido),
+    #000 calc(100% - var(--marquesina-desvanecido)),
+    transparent 100%);
+}
+.marquesina-pista {
+  display: flex;
+  width: max-content;
+  animation: marquesina var(--marquesina-duracion) linear infinite;
+  will-change: transform;
+}
+/* Pausa al pasar el mouse y tambien al llegar con el teclado. */
+.marquesina:hover .marquesina-pista,
+.marquesina:focus-within .marquesina-pista { animation-play-state: paused; }
+
+.marquesina-grupo { display: flex; align-items: center; flex-shrink: 0; }
+.marquesina-item {
+  white-space: nowrap;
+  font-size: 0.875rem; line-height: 1.25rem; font-weight: 500;
+  padding: 0 var(--s-200);
+}
+.marquesina-punto {
+  width: 4px; height: 4px; flex-shrink: 0;
+  border-radius: var(--r-full);
+  background: currentColor; opacity: 0.5;
+}
+
+@keyframes marquesina {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Sin movimiento: el aviso se queda quieto y centrado, y la copia sobrante
+   desaparece. Un aviso medico tiene que poder leerse sin perseguirlo. */
+@media (prefers-reduced-motion: reduce) {
+  .marquesina { mask-image: none; -webkit-mask-image: none; }
+  .marquesina-pista { animation: none; width: 100%; justify-content: center; }
+  .marquesina-grupo[aria-hidden="true"] { display: none; }
+  .marquesina-grupo .marquesina-item ~ .marquesina-item,
+  .marquesina-grupo .marquesina-punto { display: none; }
+  .marquesina-item { white-space: normal; text-align: center; }
+}
+
 /* --- Selector de tema ---------------------------------------------------- */
 .tema {
   display: flex; gap: var(--s-25);
