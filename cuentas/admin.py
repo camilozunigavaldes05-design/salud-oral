@@ -25,3 +25,4 @@ class UsuarioAdmin(UserAdmin):
 class ProfesionalAdmin(admin.ModelAdmin):
     list_display = ["usuario", "registro", "especialidad", "comuna", "verificado"]
     list_filter = ["verificado"]
+    search_fields = ["registro", "centro", "comuna", "direccion"]

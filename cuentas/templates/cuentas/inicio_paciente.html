@@ -57,11 +57,11 @@
         {% if proxima_cita %}
           <p class="body-1">{{ proxima_cita.horario.inicio|date:"j \d\e F, H:i" }}</p>
           <p class="body-6" style="color: var(--texto-suave);">
-            {{ proxima_cita.horario.profesional.usuario.first_name|capfirst }}
-            {{ proxima_cita.horario.profesional.usuario.last_name|capfirst }}<br>
-            {{ proxima_cita.horario.profesional.centro|capfirst }}, {{ proxima_cita.horario.profesional.comuna|capfirst }}
+            {{ profesional_de_turno.usuario.first_name|capfirst }}
+            {{ profesional_de_turno.usuario.last_name|capfirst }}
           </p>
           <p><span class="estado estado-{{ proxima_cita.estado }}">{{ proxima_cita.get_estado_display }}</span></p>
+          {% include "_ubicacion.html" with profesional=profesional_de_turno %}
         {% else %}
           <div class="vacio">
             <p class="body-6">No tienes citas agendadas.</p>

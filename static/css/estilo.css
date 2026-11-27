@@ -604,6 +604,51 @@ ul.errorlist.nonfield {
 .datos-cita dd { margin: 0 0 var(--s-200); font-size: 1rem; line-height: 1.5rem; }
 .contador-tiempo { font-size: 1.875rem; line-height: 2.25rem; font-weight: 600; color: var(--accion); }
 
+/* --- Ubicacion de la consulta -------------------------------------------
+   El pin ancla la direccion y el boton abre la ruta en Maps.
+
+   El recuadro va sobre `superficie`, no sobre un tinte azul: los tokens de
+   texto estan medidos contra esa superficie y sobre el azul claro
+   `texto-suave` caia a 4.37:1, bajo el minimo AA.
+
+   Lo que agrupa el bloque es la barra lateral al color de accion, no un
+   borde completo: un borde de `borde` contra la tarjeta da 1.23:1, o sea
+   no se ve. La barra se ve y ademas significa algo: aqui va el lugar.
+   ------------------------------------------------------------------------ */
+.ubicacion {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--s-50) var(--s-100);
+  align-items: start;
+  padding: var(--s-75) 0 var(--s-75) var(--s-100);
+  border-left: 3px solid var(--accion);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  background: var(--superficie);
+}
+.ubicacion-pin { color: var(--accion); margin-top: var(--s-25); }
+.ubicacion-donde p { margin: 0; }
+.ubicacion-calle  { font-size: 0.9375rem; line-height: 1.375rem; font-weight: 600; }
+.ubicacion-centro { font-size: 0.875rem;  line-height: 1.25rem;  color: var(--texto-suave); }
+.ubicacion-sena   { font-size: 0.875rem;  line-height: 1.25rem;  color: var(--texto-suave); }
+/* Gana por especificidad al `margin: 0` de arriba, sin recurrir a !important. */
+.ubicacion-donde .ubicacion-sena { margin-top: var(--s-25); }
+/* El boton ocupa la segunda columna, alineado con el texto y no con el pin. */
+.ubicacion-ruta { grid-column: 2; justify-self: start; margin-top: var(--s-75); }
+
+/* Version en una linea, para listas donde la direccion ya esta escrita. */
+.enlace-mapa {
+  display: inline-flex; align-items: center; gap: var(--s-50);
+  color: var(--accion); font-size: 0.875rem; line-height: 1.25rem; font-weight: 600;
+  text-decoration: none;
+  /* 20px de linea + 8px de relleno = 28px de alto: por encima del minimo
+     de 24px que pide WCAG 2.5.8 para un blanco tactil. */
+  padding: var(--s-50) var(--s-75); margin-left: calc(var(--s-75) * -1);
+  border-radius: var(--r-md);
+  transition: background var(--dur-color) var(--curva);
+}
+.enlace-mapa:hover { background: var(--accion-suave); text-decoration: underline; }
+.enlace-mapa .icono { width: 16px; height: 16px; }
+
 /* --- Avisos ------------------------------------------------------------- */
 .aviso-item { padding: var(--s-200) 0; border-bottom: 1px solid var(--borde); }
 .aviso-item.nuevo { background: var(--azul-50); border-radius: var(--r-xl); padding: var(--s-200); }

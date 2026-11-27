@@ -1,4 +1,5 @@
 from decimal import Decimal
+from urllib.parse import urlencode
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -116,6 +117,16 @@ class FichaClinica(models.Model):
         return any([self.estatura_cm, self.peso_kg, self.molestias.strip()])
 
 
+# El paciente no escribe la direccion a mano: la app arma el enlace.
+# Google Maps resuelve la ruta desde donde este el telefono, asi que el
+# esquema de URLs basta y no hace falta clave, mapa incrustado ni permiso
+# de ubicacion del navegador.
+MAPAS = "https://www.google.com/maps/dir/"
+
+# Las comunas chilenas se repiten en otros paises; el pais acota la busqueda.
+PAIS = "Chile"
+
+
 class Profesional(models.Model):
     usuario = models.OneToOneField(
         Usuario,
@@ -127,6 +138,18 @@ class Profesional(models.Model):
     especialidad = models.CharField(max_length=80)
     centro = models.CharField(max_length=120)
     comuna = models.CharField(max_length=60)
+    direccion = models.CharField(
+        "dirección",
+        max_length=160,
+        blank=True,
+        default="",
+    )
+    como_llegar = models.CharField(
+        "cómo llegar",
+        max_length=200,
+        blank=True,
+        default="",
+    )
     verificado = models.BooleanField(default=False)
 
     class Meta:
@@ -135,3 +158,23 @@ class Profesional(models.Model):
 
     def __str__(self):
         return f"{self.usuario} - {self.especialidad}"
+
+    @property
+    def ubicacion(self):
+        """Donde atiende, en una linea, de lo preciso a lo general."""
+        partes = [self.direccion, self.centro, self.comuna]
+        return ", ".join(parte.strip() for parte in partes if parte.strip())
+
+    @property
+    def tiene_direccion(self):
+        return bool(self.direccion.strip())
+
+    @property
+    def enlace_mapa(self):
+        """Indicaciones hacia la consulta, en la app de mapas del paciente.
+
+        Sin direccion sigue sirviendo: el nombre del centro y la comuna
+        suelen bastar para encontrarlo, solo con menos precision.
+        """
+        destino = f"{self.ubicacion}, {PAIS}" if self.ubicacion else PAIS
+        return f"{MAPAS}?{urlencode({'api': '1', 'destination': destino})}"

@@ -322,3 +322,92 @@ class FichaVisibleParaElProfesionalTests(TestCase):
         self.client.force_login(otro)
         respuesta = self.client.get(reverse("cuentas:inicio"))
         self.assertNotContains(respuesta, "llaga")
+
+
+class UbicacionDeLaConsultaTests(TestCase):
+    """El enlace al mapa es lo único que el paciente no escribe a mano."""
+
+    def crear(self, **cambios):
+        datos = {
+            "registro": "999",
+            "especialidad": "Odontología",
+            "centro": "Clínica Viña",
+            "comuna": "Viña del Mar",
+        }
+        datos.update(cambios)
+        return Profesional(
+            usuario=Usuario(first_name="Luz", last_name="Soto"),
+            **datos,
+        )
+
+    def test_la_ubicacion_va_de_lo_preciso_a_lo_general(self):
+        profesional = self.crear(direccion="Av. Libertad 1348")
+        self.assertEqual(
+            profesional.ubicacion,
+            "Av. Libertad 1348, Clínica Viña, Viña del Mar",
+        )
+
+    def test_sin_direccion_la_ubicacion_no_deja_comas_sueltas(self):
+        self.assertEqual(self.crear().ubicacion, "Clínica Viña, Viña del Mar")
+
+    def test_el_enlace_codifica_los_espacios_y_los_acentos(self):
+        """Una dirección sin codificar rompe la URL y el mapa cae en otro lugar."""
+        enlace = self.crear(direccion="Av. Libertad 1348").enlace_mapa
+        self.assertTrue(enlace.startswith("https://www.google.com/maps/dir/?api=1&destination="))
+        self.assertNotIn(" ", enlace)
+        self.assertIn("Libertad+1348", enlace)
+        self.assertIn("Vi%C3%B1a", enlace)
+
+    def test_el_enlace_acota_la_busqueda_al_pais(self):
+        """Hay comunas chilenas con el mismo nombre en otros países."""
+        self.assertTrue(self.crear().enlace_mapa.endswith("%2C+Chile"))
+
+    def test_sin_direccion_el_enlace_sigue_sirviendo(self):
+        """Menos preciso, pero el centro y la comuna suelen bastar."""
+        enlace = self.crear().enlace_mapa
+        self.assertIn("Cl%C3%ADnica+Vi%C3%B1a", enlace)
+
+
+class MiConsultaTests(TestCase):
+    def setUp(self):
+        usuario = crear_paciente("pro@test.cl", rol=Usuario.Rol.PROFESIONAL)
+        self.profesional = Profesional.objects.create(
+            usuario=usuario,
+            registro="555",
+            especialidad="Odontología",
+            centro="Clínica Viña",
+            comuna="Viña del Mar",
+            verificado=True,
+        )
+        self.client.force_login(usuario)
+        self.url = reverse("cuentas:mi_consulta")
+
+    def test_el_profesional_guarda_donde_atiende(self):
+        respuesta = self.client.post(
+            self.url,
+            {
+                "centro": "Clínica Viña",
+                "comuna": "Viña del Mar",
+                "direccion": "Av. Libertad 1348",
+                "como_llegar": "Piso 3, oficina 302",
+            },
+        )
+        self.assertRedirects(respuesta, reverse("cuentas:inicio"))
+        self.profesional.refresh_from_db()
+        self.assertEqual(self.profesional.direccion, "Av. Libertad 1348")
+        self.assertTrue(self.profesional.tiene_direccion)
+
+    def test_sin_direccion_el_panel_se_lo_recuerda(self):
+        respuesta = self.client.get(reverse("cuentas:inicio"))
+        self.assertContains(respuesta, "No has puesto la dirección")
+
+    def test_con_direccion_el_panel_no_insiste(self):
+        self.profesional.direccion = "Av. Libertad 1348"
+        self.profesional.save()
+        respuesta = self.client.get(reverse("cuentas:inicio"))
+        self.assertNotContains(respuesta, "No has puesto la dirección")
+
+    def test_el_paciente_no_entra_a_mi_consulta(self):
+        self.client.force_login(crear_paciente("otra@test.cl"))
+        respuesta = self.client.get(self.url)
+        self.assertRedirects(respuesta, reverse("cuentas:inicio"))

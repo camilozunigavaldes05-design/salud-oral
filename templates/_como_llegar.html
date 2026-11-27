@@ -1,0 +1,17 @@
+{% comment %}
+Solo el enlace a la ruta, para cuando la dirección ya está escrita al lado.
+La versión con el recuadro completo es `_ubicacion.html`.
+
+Espera `profesional` en el contexto.
+{% endcomment %}
+{% load static %}
+<a class="enlace-mapa" href="{{ profesional.enlace_mapa }}"
+   target="_blank" rel="noopener noreferrer">
+  <svg class="icono" aria-hidden="true">
+    <use href="{% static 'img/iconos.svg' %}#i-navigation-arrow"></use>
+  </svg>
+  Cómo llegar
+  <span class="visually-hidden">
+    a {{ profesional.ubicacion }}. Se abre Google Maps en otra pestaña.
+  </span>
+</a>

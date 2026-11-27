@@ -60,6 +60,10 @@
               <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-calendar-check"></use></svg>
               <span>Mis citas</span>
             </a>
+            <a href="{% url 'cuentas:mi_consulta' %}"{% if request.resolver_match.view_name == 'cuentas:mi_consulta' %} aria-current="page"{% endif %}>
+              <svg class="icono" aria-hidden="true"><use href="{% static 'img/iconos.svg' %}#i-map-pin"></use></svg>
+              <span>Mi consulta</span>
+            </a>
 
           {% elif user.rol == "ADMINISTRADOR" %}
             <a href="{% url 'administracion:profesionales' %}"{% if request.resolver_match.view_name == 'administracion:profesionales' %} aria-current="page"{% endif %}>

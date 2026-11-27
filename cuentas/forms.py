@@ -80,6 +80,15 @@ class RegistroProfesionalForm(RegistroPacienteForm):
     especialidad = forms.CharField(label="Especialidad", max_length=80)
     centro = forms.CharField(label="Centro de atención", max_length=120)
     comuna = forms.CharField(label="Comuna", max_length=60)
+    # Opcional para no frenar el registro, pero es lo que permite que el
+    # paciente llegue sin preguntar. Si falta, el panel se lo recuerda.
+    direccion = forms.CharField(
+        label="Dirección",
+        max_length=160,
+        required=False,
+        help_text="Calle y número. Es lo que verá el paciente para llegar.",
+        widget=forms.TextInput(attrs={"placeholder": "Av. Libertad 1348"}),
+    )
 
     def clean_registro(self):
         registro = self.cleaned_data["registro"].strip()
@@ -100,8 +109,34 @@ class RegistroProfesionalForm(RegistroPacienteForm):
             especialidad=self.cleaned_data["especialidad"],
             centro=self.cleaned_data["centro"],
             comuna=self.cleaned_data["comuna"],
+            direccion=self.cleaned_data.get("direccion", ""),
         )
         return usuario
+
+
+class ConsultaForm(forms.ModelForm):
+    """Donde atiende el profesional. Lo edita solo el dueño de la cuenta."""
+
+    class Meta:
+        model = Profesional
+        fields = ["centro", "comuna", "direccion", "como_llegar"]
+        labels = {
+            "centro": "Centro de atención",
+            "comuna": "Comuna",
+            "direccion": "Dirección",
+            "como_llegar": "Cómo llegar",
+        }
+        help_texts = {
+            "centro": "El nombre con el que lo conocen tus pacientes.",
+            "direccion": "Calle y número. Con esto el paciente abre la ruta en el mapa.",
+            "como_llegar": "Opcional: piso, oficina, una seña para encontrarte.",
+        }
+        widgets = {
+            "direccion": forms.TextInput(attrs={"placeholder": "Av. Libertad 1348"}),
+            "como_llegar": forms.TextInput(
+                attrs={"placeholder": "Piso 3, oficina 302. Timbre al llegar."}
+            ),
+        }
 
 
 class FichaClinicaForm(forms.ModelForm):

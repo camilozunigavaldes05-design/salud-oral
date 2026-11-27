@@ -11,7 +11,7 @@
         <dt>Profesional</dt>
         <dd>{{ profesional.usuario.first_name }} {{ profesional.usuario.last_name }} · {{ profesional.especialidad }}</dd>
         <dt>Lugar</dt>
-        <dd>{{ profesional.centro }}, {{ profesional.comuna }}</dd>
+        <dd>{% include "_ubicacion.html" %}</dd>
         <dt>Fecha y hora</dt>
         <dd>{{ horario.inicio|date:"l j \d\e F \d\e Y" }}, de {{ horario.inicio|time:"H:i" }} a {{ horario.fin|time:"H:i" }}</dd>
       </dl>

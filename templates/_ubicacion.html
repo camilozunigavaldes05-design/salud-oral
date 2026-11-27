@@ -1,0 +1,39 @@
+{% comment %}
+Dónde atiende el profesional, y la ruta hasta ahí.
+
+El botón abre la app de mapas del paciente con las indicaciones ya trazadas
+desde donde esté. No pedimos permiso de ubicación al navegador ni
+incrustamos un mapa: la ruta la resuelve Maps, así que no hace falta clave
+ni JavaScript y funciona igual en el teléfono que en el escritorio.
+
+Espera `profesional` en el contexto.
+{% endcomment %}
+{% load static %}
+<div class="ubicacion">
+  <svg class="icono ubicacion-pin" aria-hidden="true">
+    <use href="{% static 'img/iconos.svg' %}#i-map-pin"></use>
+  </svg>
+
+  <div class="ubicacion-donde">
+    {% if profesional.direccion %}
+      <p class="ubicacion-calle">{{ profesional.direccion }}</p>
+    {% endif %}
+    <p class="ubicacion-centro">
+      {{ profesional.centro|capfirst }}, {{ profesional.comuna|capfirst }}
+    </p>
+    {% if profesional.como_llegar %}
+      <p class="ubicacion-sena">{{ profesional.como_llegar }}</p>
+    {% endif %}
+  </div>
+
+  <a class="boton boton-secundario boton-chico ubicacion-ruta"
+     href="{{ profesional.enlace_mapa }}" target="_blank" rel="noopener noreferrer">
+    <svg class="icono" aria-hidden="true">
+      <use href="{% static 'img/iconos.svg' %}#i-navigation-arrow"></use>
+    </svg>
+    Cómo llegar
+    <span class="visually-hidden">
+      a {{ profesional.ubicacion }}. Se abre Google Maps en otra pestaña.
+    </span>
+  </a>
+</div>

@@ -11,6 +11,7 @@ from administracion.servicios import avisar_nuevo_profesional
 
 from .autenticacion import verificar_credenciales
 from .forms import (
+    ConsultaForm,
     FichaClinicaForm,
     InicioSesionForm,
     RegistroPacienteForm,
@@ -198,6 +199,29 @@ def mi_ficha(request):
         return redirect("cuentas:inicio")
 
     return render(request, "cuentas/mi_ficha.html", {"form": form})
+
+
+@login_required
+def mi_consulta(request):
+    """El profesional declara donde atiende. Es lo que el paciente ve para llegar."""
+    if request.user.rol != Usuario.Rol.PROFESIONAL:
+        return redirect("cuentas:inicio")
+
+    profesional = getattr(request.user, "profesional", None)
+    if profesional is None:
+        return redirect("cuentas:inicio")
+
+    form = ConsultaForm(request.POST or None, instance=profesional)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Listo: tus pacientes ya pueden ver cómo llegar.")
+        return redirect("cuentas:inicio")
+
+    return render(
+        request,
+        "cuentas/mi_consulta.html",
+        {"form": form, "profesional": profesional},
+    )
 
 
 @require_POST

@@ -26,6 +26,14 @@
     </p>
   {% endif %}
 
+  {% if not profesional.tiene_direccion %}
+    <p class="aviso">
+      <strong>No has puesto la dirección de tu consulta.</strong>
+      Tus pacientes ven el centro y la comuna, pero no pueden abrir la ruta en el mapa.
+      <a href="{% url 'cuentas:mi_consulta' %}">Agregarla ahora</a>.
+    </p>
+  {% endif %}
+
   <div class="panel">
     <section class="tarjeta">
       <span class="etiqueta">Por confirmar</span>
@@ -161,6 +169,15 @@
               El historial se habilita mientras exista una cita vigente con este paciente.
             </p>
           {% endif %}
+        </div>
+      </section>
+
+      <section class="bloque-columna">
+        <h3>Lo que ve el paciente</h3>
+        <div class="tarjeta">
+          {% include "_ubicacion.html" %}
+          <a class="boton boton-secundario boton-chico boton-ancho" style="margin-top: var(--s-100);"
+             href="{% url 'cuentas:mi_consulta' %}">Editar mi consulta</a>
         </div>
       </section>
 

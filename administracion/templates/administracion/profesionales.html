@@ -44,7 +44,7 @@
                 <td>{{ profesional.registro }}</td>
                 <td>
                   {{ profesional.especialidad|capfirst }}<br>
-                  <span class="fecha">{{ profesional.centro|capfirst }}, {{ profesional.comuna|capfirst }}</span>
+                  <span class="fecha">{% if profesional.direccion %}{{ profesional.direccion }}, {% endif %}{{ profesional.centro|capfirst }}, {{ profesional.comuna|capfirst }}</span>
                 </td>
                 <td>{{ profesional.usuario.date_joined|date:"j \d\e F \d\e Y" }}</td>
                 <td>
@@ -100,7 +100,7 @@
                 <td>{{ profesional.registro }}</td>
                 <td>
                   {{ profesional.especialidad|capfirst }}<br>
-                  <span class="fecha">{{ profesional.centro|capfirst }}, {{ profesional.comuna|capfirst }}</span>
+                  <span class="fecha">{% if profesional.direccion %}{{ profesional.direccion }}, {% endif %}{{ profesional.centro|capfirst }}, {{ profesional.comuna|capfirst }}</span>
                 </td>
                 <td><span class="estado estado-{{ profesional.usuario.estado }}">{{ profesional.usuario.get_estado_display }}</span></td>
               </tr>

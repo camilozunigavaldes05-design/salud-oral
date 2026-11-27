@@ -28,8 +28,9 @@
             <p class="body-6" style="color: var(--texto-suave);">
               {{ profesional.usuario.first_name|capfirst }} {{ profesional.usuario.last_name|capfirst }}
               · {{ profesional.especialidad }}<br>
-              {{ profesional.centro }}, {{ profesional.comuna }}
+              {% if profesional.direccion %}{{ profesional.direccion }}, {% endif %}{{ profesional.centro }}, {{ profesional.comuna }}
             </p>
+            {% include "_como_llegar.html" %}
             {% if cita.estado == "CANCELADA" and cita.motivo_cancelacion %}
               <p class="aviso">Motivo de la cancelación: {{ cita.motivo_cancelacion }}</p>
             {% endif %}
